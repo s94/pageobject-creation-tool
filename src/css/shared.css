@@ -1,0 +1,102 @@
+:root {
+	--clr-raisin-black: #1E1F29;
+	--clr-onyx: #3B3D48;
+	--clr-baby-powder: #F8F8F2;
+	--clr-little-boy-blue: #71A9F7;
+	--clr-azure: #2C83FE;
+	--clr-french-raspberry: #C33149;
+	--clr-antique-ruby: #91162B;
+}
+
+* {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	color: var(--clr-baby-powder);
+}
+
+html {
+	font-size: 1em;
+}
+
+body {
+	background-color: var(--clr-raisin-black);
+}
+
+a {
+	text-decoration: none;
+	padding: 0.2em 1em;
+	border: 0.1em solid var(--clr-baby-powder);
+	border-radius: 0.3em;
+}
+
+a:hover,
+a:focus {
+	background-color: var(--clr-baby-powder);
+	color: var(--clr-raisin-black);
+	border: 0.1em solid var(--clr-baby-powder);
+	border-radius: 0.3em;
+}
+
+select:invalid {
+	color: gray;
+}
+
+table {
+	width: 100%;
+	text-align: left;
+	border-spacing: inherit;
+}
+
+table tr td:last-child {
+	text-align: center;
+}
+
+table tbody tr {
+	height: 4em;
+	background-color: var(--clr-onyx);
+}
+
+table tbody tr:nth-child(2n) {
+	background-color: var(--clr-raisin-black);
+}
+
+table tbody td:first-child,
+table tbody td:last-child {
+	padding: 0 0.5em;
+}
+
+table thead th {
+	padding: 0 1em 0 0;
+}
+
+.wrapper {
+	text-align: center;
+}
+
+.button {
+	background-color: var(--clr-little-boy-blue);
+	border: 0.1em solid var(--clr-little-boy-blue);
+	border-radius: 0.3em;
+}
+
+.button:hover,
+.button:focus {
+	background-color: var(--clr-azure);
+	cursor: pointer;
+}
+
+.remove-button {
+	background-color: var(--clr-french-raspberry);
+	border: 0.1em solid var(--clr-french-raspberry);
+	border-radius: 0.3em;
+	padding: 0.4em 1em;
+}
+
+table .remove-button {
+	font-size: 0.8em;
+}
+
+.remove-button:hover,
+.remove-button:focus {
+	background-color: var(--clr-antique-ruby);
+	cursor: pointer;
+}

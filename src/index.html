@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+		<title>PageObject Creation Tool</title>
+		<link rel="stylesheet" href="css/shared.css">
+		<link rel="stylesheet" href="css/index.css">
+		<script src="js/shared.js" type="text/javascript"></script>
+		<script src="js/index.js" type="text/javascript"></script>
+	</head>
+	<body onload="populateTemplateList();">
+		<div>
+			<label>Select Template</label>
+			<select id="template-list" class="" onchange="loadElementTypeList();">
+				<option value="0"></option>
+			</select>
+			<a href="settings.html" style="float:right;">Settings</a>
+		</div>
+
+		<hr />
+
+		<form id="pageobject-form">
+			<label class="form-label">PageObject Name*</label>
+			<input id="pageobject-name" class="form-textbox" type="text" placeholder="LoginPage"><br />
+
+			<label class="form-label">Element Name*</label>
+			<input id="element-name" class="form-textbox" type="text" placeholder="Username"><br />
+
+			<label class="form-label">Element Type*</label>
+			<select id="element-type" class="form-select"  required>
+				<option value="" disabled selected hidden>Please select...</option>
+				<option value="0"></option>
+			</select><br />
+
+			<label class="form-label">Element ID</label>
+			<input id="element-id" class="form-textbox" type="text" placeholder="username-id"><br />
+
+			<label class="form-label">Include Get</label>
+			<input id="include-get" type="checkbox"><br />
+
+			<button id="add-button" class="button" type="button" onclick="addElementToTable();" >Add</button>
+		</form>
+
+		<hr />
+
+		<table>
+			<thead>
+				<tr>
+					<th>Element Name</th>
+					<th>Element Type</th>
+					<th>Element ID</th>
+					<th>Get</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="element-table">
+			</tbody>
+		</table>
+
+		<div class="wrapper">
+			<button id="generate-pageobject" class="button" type="button" onclick="generatePageObject();">Generate</button>
+		</div>
+
+		<div id="output-modal" class="modal hide">
+			<div class="modal-content">
+				<div class="modal-title">
+					<label>Generated PageObject</label>
+					<span id="modal-close" class="close" onclick="closeModal();">&times;</span>
+				</div>
+				<textarea id="output" spellcheck="false"></textarea>
+				<div class="modal-footer">
+					<button id="copy-to-clipboard-button" class="button" onclick="copyToClipboard();">Copy To Clipboard</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

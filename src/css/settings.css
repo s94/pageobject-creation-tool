@@ -1,0 +1,54 @@
+#element-type-table {
+	font-size: 0.8em;
+}
+
+table tr td:nth-child(2),
+table tr td:nth-child(3) {
+	font-family: consolas;
+}
+
+#template-list,
+.form-textbox,
+.form-textarea {
+	background-color: var(--clr-onyx);
+	border: 0.1em solid var(--clr-onyx);
+	border-radius: 0.3em;
+}
+
+#template-list {
+	padding: 0.4em;
+	width: 24em;
+}
+
+.form-textbox {
+	padding: 0.3em;
+	width: 20em;
+}
+
+.form-textarea {
+	font-family: consolas;
+	padding: 0.3em;
+	min-width: 70%;
+	margin-top: 0.5em;
+}
+
+.form-label {
+	display: inline-block;
+	width: 12rem;
+	text-align: right;
+	padding: 0.5em 0.5em 0 0;
+}
+
+.form-label-textarea {
+	vertical-align: top;
+}
+
+#add-button,
+#save-template {
+	padding: 0.5em 10em;
+	margin: 1em 0;
+}
+
+#edit-template {
+	padding: 0.4em 1em;
+}

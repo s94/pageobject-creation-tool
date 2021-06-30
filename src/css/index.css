@@ -1,0 +1,105 @@
+#element-table {
+	font-size: 0.8em;
+}
+
+.form-label {
+	display: inline-block;
+	width: 9rem;
+	text-align: right;
+	padding: 0.5em 0.5em 0 0;
+}
+
+.form-textbox,
+.form-select,
+#template-list {
+	background-color: var(--clr-onyx);
+	border: 0.1em solid var(--clr-onyx);
+	border-radius: 0.3em;
+	padding: 0.3em;
+}
+
+.form-textbox {
+	width: 20em;
+}
+
+.form-select {
+	width: 20.75em;
+}
+
+#template-list {
+	width: 24em;
+}
+
+.modal {
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+	margin: 5% auto 0;
+	padding: 20px;
+	background-color: var(--clr-raisin-black);
+	border: 0.1em solid var(--clr-onyx);
+	border-radius: 0.5em;
+	width: 80%;
+}
+
+.modal-title {
+	height: 2.5em;
+	border-bottom: 0.1em solid var(--clr-baby-powder);
+	margin-bottom: 1.5em;
+}
+
+.modal-footer {
+	margin-top: 1em;
+	text-align: center;
+}
+
+.close {
+	float: right;
+}
+
+.close:hover,
+.close:focus {
+	cursor: pointer;
+}
+
+.hide {
+	display: none;
+}
+
+#add-button {
+	padding: 0.5em;
+	margin: 1em 6.5em;
+	width: 19.7em;
+	display: inline-block;
+}
+
+#generate-pageobject {
+	position: absolute;
+	padding: 0.5em 10em;
+	margin-top: 2em;
+	transform: translateX(-50%);
+}
+
+#output {
+	background-color: var(--clr-onyx);
+	border: 0.1em solid var(--clr-onyx);
+	border-radius: 0.3em;
+	font-family: consolas;
+	width: 99.3%;
+	min-height: 20em;
+	tab-size: 2em;
+}
+
+#copy-to-clipboard-button {
+	vertical-align: -webkit-baseline-middle;
+	width: 15em;
+	padding: 0.5em;
+}
