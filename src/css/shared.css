@@ -2,6 +2,7 @@
 	--clr-raisin-black: #1E1F29;
 	--clr-onyx: #3B3D48;
 	--clr-baby-powder: #F8F8F2;
+	--clr-black-coral: #5C5F70;
 	--clr-little-boy-blue: #71A9F7;
 	--clr-azure: #2C83FE;
 	--clr-french-raspberry: #C33149;
@@ -9,8 +10,10 @@
 }
 
 * {
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family: 'Segoe UI', sans-serif;
 	color: var(--clr-baby-powder);
+	margin: 0;
+	box-sizing: border-box;
 }
 
 html {
@@ -18,7 +21,7 @@ html {
 }
 
 body {
-	background-color: var(--clr-raisin-black);
+	background-color: var(--clr-onyx);
 }
 
 a {
