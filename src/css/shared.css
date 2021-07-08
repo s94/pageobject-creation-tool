@@ -2,7 +2,6 @@
 	--clr-raisin-black: #1E1F29;
 	--clr-onyx: #3B3D48;
 	--clr-baby-powder: #F8F8F2;
-	--clr-black-coral: #5C5F70;
 	--clr-little-boy-blue: #71A9F7;
 	--clr-azure: #2C83FE;
 	--clr-french-raspberry: #C33149;
@@ -16,27 +15,41 @@
 	box-sizing: border-box;
 }
 
-html {
-	font-size: 1em;
-}
-
 body {
 	background-color: var(--clr-onyx);
 }
 
-a {
-	text-decoration: none;
-	padding: 0.2em 1em;
-	border: 0.1em solid var(--clr-baby-powder);
-	border-radius: 0.3em;
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: var(--clr-raisin-black);
+	box-shadow: 0px 4px 10px 0px var(--clr-onyx);
+	padding: 1rem;
 }
 
-a:hover,
-a:focus {
+header div {
+	line-height: 1rem;
+}
+
+header a {
+	text-decoration: none;
+	padding: 0.2rem 1rem;
+	border: 1px solid var(--clr-baby-powder);
+	border-radius: 4px;
+}
+
+header a:hover,
+header a:focus {
 	background-color: var(--clr-baby-powder);
 	color: var(--clr-raisin-black);
-	border: 0.1em solid var(--clr-baby-powder);
-	border-radius: 0.3em;
+	border: 1px solid var(--clr-baby-powder);
+	border-radius: 4px;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
 }
 
 select:invalid {
@@ -54,31 +67,31 @@ table tr td:last-child {
 }
 
 table tbody tr {
-	height: 4em;
-	background-color: var(--clr-onyx);
+	height: 4rem;
+	background-color: var(--clr-raisin-black);
 }
 
 table tbody tr:nth-child(2n) {
-	background-color: var(--clr-raisin-black);
+	background-color: var(--clr-onyx);
 }
 
 table tbody td:first-child,
 table tbody td:last-child {
-	padding: 0 0.5em;
+	padding: 0 0.5rem;
 }
 
 table thead th {
-	padding: 0 1em 0 0;
-}
-
-.wrapper {
-	text-align: center;
+	padding: 0 1rem 0 0;
 }
 
 .button {
 	background-color: var(--clr-little-boy-blue);
-	border: 0.1em solid var(--clr-little-boy-blue);
-	border-radius: 0.3em;
+	border: 1px solid var(--clr-little-boy-blue);
+	border-radius: 4px;
+
+	padding: 0.5rem;
+	width: 20rem;
+	align-self: center;
 }
 
 .button:hover,
@@ -89,17 +102,30 @@ table thead th {
 
 .remove-button {
 	background-color: var(--clr-french-raspberry);
-	border: 0.1em solid var(--clr-french-raspberry);
-	border-radius: 0.3em;
-	padding: 0.4em 1em;
-}
-
-table .remove-button {
-	font-size: 0.8em;
+	border: 1px solid var(--clr-french-raspberry);
+	border-radius: 4px;
+	padding: 0.4rem 1rem;
 }
 
 .remove-button:hover,
 .remove-button:focus {
 	background-color: var(--clr-antique-ruby);
 	cursor: pointer;
+}
+
+.w-fill-available {
+	width: -webkit-fill-available;
+}
+
+.mandatory::after {
+	content: "*";
+	color: var(--clr-french-raspberry);
+	margin-left: 0.2rem;
+}
+
+@media (min-width: 72rem) {
+	main {
+		flex-direction: row;
+		align-items: center;
+	}
 }
