@@ -53,6 +53,10 @@
 	margin: 0 1rem 0 0;
 }
 
+.nowrap {
+	white-space: nowrap;
+}
+
 @media (min-width: 72rem) {
 	.form__item,
 	.form__textarea {
