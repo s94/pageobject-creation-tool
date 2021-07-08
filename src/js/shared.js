@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const templateFile = "template.json";
-const removeButtonHtml = "<button class='remove-button' onclick='deleteRowFromTable(this);'>Remove</button>";
+const removeButtonHtml = "<button class='table__button--remove' onclick='deleteRowFromTable(this);'>Remove</button>";
 
 const rawData = fs.readFileSync(path.resolve(__dirname, templateFile));
 let settingsFileContent = JSON.parse(rawData);

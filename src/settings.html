@@ -10,73 +10,76 @@
 		<script src="js/settings.js" type="text/javascript" async></script>
 	</head>
 	<body onload="populateTemplateList();">
-		<header>
-			<div>pageobject-creation-tool</div>
-			<a href="index.html">Home</a>
+		<header class="header">
+			<div class="header__title">pageobject-creation-tool</div>
+			<a class="header__link" href="index.html">Home</a>
 		</header>
-		<main>
-			<form id="settings-form" spellcheck="false">
-				<div id="template-info" class="w-fill-available">
-					<label class="form-label">Load Template</label>
-					<div id="template-info-ext">
-						<select id="template-list">
+		<main class="main">
+			<form class="form" spellcheck="false">
+				<div class="form-header w-fill-available">
+					<label class="form-header__label">Load Template</label>
+					<div class="form-header__content">
+						<select class="form__select" id="template-list">
 							<option value="0"></option>
 						</select>
-						<button id="edit-template" class="button" type="button" onclick="loadTemplate();" >Edit</button>
-						<button id="delete-template" class="remove-button" type="button" onclick="deleteTemplate();">Delete</button>
+						<button class="form__button mr-1 w-4" id="edit-template" type="button" onclick="loadTemplate();" >
+							Edit
+						</button>
+						<button class="form__button form__button--remove mr-1" id="delete-template" type="button" onclick="deleteTemplate();">
+							Delete
+						</button>
 					</div>
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label mandatory">Template Name</label>
-					<input id="template-name" class="form-textbox" type="text" placeholder="Template Name...">
+				<div class="form__item">
+					<label class="form__label mandatory">Template Name</label>
+					<input class="form__input" id="template-name" type="text" placeholder="Template Name...">
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label form-label-textarea mandatory">Element Template</label>
-					<textarea id="element-declaration-template" class="form-textarea" placeholder="Variables available: ${ElementName}, ${ElementType} and ${ElementId}"></textarea>
+				<div class="form__item">
+					<label class="form__label mandatory">Element Template</label>
+					<textarea class="form__textarea" id="element-declaration-template" placeholder="Variables available: ${ElementName}, ${ElementType} and ${ElementId}"></textarea>
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label form-label-textarea mandatory">PageObject Structure</label>
-					<textarea id="pageobject-structure" class="form-textarea" style="min-height: 15em;" placeholder="Variables available: ${PageObjectName}, ${Elements}, ${GeneralMethods} and ${GetMethods}"></textarea>
+				<div class="form__item">
+					<label class="form__label mandatory">PageObject Structure</label>
+					<textarea class="form__textarea" id="pageobject-structure" style="min-height: 15em;" placeholder="Variables available: ${PageObjectName}, ${Elements}, ${GeneralMethods} and ${GetMethods}"></textarea>
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label mandatory">Element Type</label>
-					<input id="element-type" class="form-textbox" type="text" placeholder="Element Type...">
+				<div class="form__item">
+					<label class="form__label mandatory">Element Type</label>
+					<input class="form__input" id="element-type" type="text" placeholder="Element Type...">
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label form-label-textarea mandatory">General Method Template</label>
-					<textarea id="general-method-template" class="form-textarea" placeholder="Variables available: ${ElementName}"></textarea>
+				<div class="form__item">
+					<label class="form__label mandatory">General Method Template</label>
+					<textarea class="form__textarea" id="general-method-template" placeholder="Variables available: ${ElementName}"></textarea>
 				</div>
 
-				<div class="settings-form__item">
-					<label class="form-label form-label-textarea">Get Method Template</label>
-					<textarea id="get-method-template" class="form-textarea" placeholder="Variables available: ${ElementName}" ></textarea>
+				<div class="form__item">
+					<label class="form__label">Get Method Template</label>
+					<textarea class="form__textarea" id="get-method-template" placeholder="Variables available: ${ElementName}" ></textarea>
 				</div>
 
-				<button id="add-button" class="button" type="button" onclick="addElementTypeToTable();" >
+				<button class="form__button" id="add-button" type="button" onclick="addElementTypeToTable();" >
 					Add
 				</button>
 			</form>
 
-			<div id="element-table-container">
-				<table>
+			<div class="table-container">
+				<table class="table">
 					<thead>
 						<tr>
-							<th style="white-space: nowrap;">Element Type</th>
+							<th class="nowrap">Element Type</th>
 							<th>General Method Template</th>
 							<th>Get Method Template</th>
 							<th></th>
 						</tr>
 					</thead>
-					<tbody id="element-type-table">
-					</tbody>
+					<tbody class="table__body" id="element-type-table"></tbody>
 				</table>
 
-				<button id="save-template" class="button" type="button" onclick="saveTemplate();">
+				<button class="table-container__button" id="save-template" type="button" onclick="saveTemplate();">
 					Save
 				</button>
 			</div>

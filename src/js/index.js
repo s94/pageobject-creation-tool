@@ -132,11 +132,11 @@ function generatePageObject() {
 	let output = pageObjectStructure.replaceAll("${PageObjectName}", pageObjectName).replace("${Elements}", elementsString).replace("${GeneralMethods}", generalMethodsString).replace("${GetMethods}", getMethodsString);
 	document.getElementById("output").value = output;
 
-	document.getElementById("output-modal").classList.remove("hide");
+	document.getElementById("output-modal").classList.remove("modal--hidden");
 }
 
 function closeModal() {
-	document.getElementById("output-modal").classList.add("hide");
+	document.getElementById("output-modal").classList.add("modal--hidden");
 }
 
 function copyToClipboard() {

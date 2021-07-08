@@ -10,29 +10,29 @@
 		<script src="js/index.js" type="text/javascript" async></script>
 	</head>
 	<body onload="populateTemplateList();">
-		<header>
-			<div>pageobject-creation-tool</div>
-			<a href="settings.html">Settings</a>
+		<header class="header">
+			<div class="header__title">pageobject-creation-tool</div>
+			<a class="header__link" href="settings.html">Settings</a>
 		</header>
-		<main>
-			<form id="pageobject-form">
-				<div class="pageobject-form__items w-fill-available">
-					<div class="pageobject-form__item w-fill-available">
-						<label class="form-label">Select Template</label>
-						<select id="template-list" class="w-fill-available" onchange="loadElementTypeList();">
+		<main class="main">
+			<form class="form">
+				<div class="form__items w-fill-available">
+					<div class="form__item w-fill-available">
+						<label class="form__label">Select Template</label>
+						<select class="form__select w-fill-available" id="template-list" onchange="loadElementTypeList();">
 							<option value="0"></option>
 						</select>
 					</div>
 				</div>
-				<div class="pageobject-form__items">
-					<div class="pageobject-form__item">
-						<label class="form-label mandatory">PageObject Name</label>
-						<input id="pageobject-name" class="form-textbox" type="text" placeholder="LoginPage" />
+				<div class="form__items">
+					<div class="form__item">
+						<label class="form__label mandatory">PageObject Name</label>
+						<input class="form__input" id="pageobject-name" type="text" placeholder="LoginPage" />
 					</div>
 
-					<div class="pageobject-form__item">
-						<label class="form-label mandatory">Element Type</label>
-						<select id="element-type" class="form-select" required>
+					<div class="form__item">
+						<label class="form__label mandatory">Element Type</label>
+						<select class="form__select" id="element-type" required>
 							<option value="" disabled selected hidden>
 								Please select...
 							</option>
@@ -41,32 +41,32 @@
 					</div>
 				</div>
 
-				<div class="pageobject-form__items">
-					<div class="pageobject-form__item">
-						<label class="form-label mandatory">Element Name</label>
-						<input id="element-name" class="form-textbox" type="text" placeholder="Username" />
+				<div class="form__items">
+					<div class="form__item">
+						<label class="form__label mandatory">Element Name</label>
+						<input class="form__input" id="element-name" type="text" placeholder="Username" />
 					</div>
 
-					<div class="pageobject-form__item">
-						<label class="form-label">Element ID</label>
-						<input id="element-id" class="form-textbox" type="text" placeholder="username-id" />
+					<div class="form__item">
+						<label class="form__label">Element ID</label>
+						<input class="form__input" id="element-id" type="text" placeholder="username-id" />
 					</div>
 				</div>
 
-				<div class="pageobject-form__items">
-					<div class="pageobject-form__item pageobject-form__item-checkbox">
-						<label for="include-get" class="form-label">Include Get</label>
+				<div class="form__items">
+					<div class="form__item form__checkbox">
+						<label class="form__label" for="include-get">Include Get</label>
 						<input id="include-get" type="checkbox" />
 					</div>
 				</div>
 
-				<button id="add-button" class="button" type="button" onclick="addElementToTable();">
+				<button class="form__button" id="add-button" type="button" onclick="addElementToTable();">
 					Add
 				</button>
 			</form>
 
-			<div id="pageobject-table-container">
-				<table id="pageobject-table">
+			<div class="table-container">
+				<table class="table">
 					<thead>
 						<tr>
 							<th>Element Name</th>
@@ -76,28 +76,28 @@
 							<th></th>
 						</tr>
 					</thead>
-					<tbody id="element-table"></tbody>
+					<tbody class="table__body" id="element-table"></tbody>
 				</table>
 
-				<button id="generate-pageobject" class="button" type="button" onclick="generatePageObject();">
+				<button class="table-container__button" id="generate-pageobject" type="button" onclick="generatePageObject();">
 					Generate
 				</button>
 			</div>
 		</main>
 
-		<div id="output-modal" class="modal">
-			<div class="modal-content">
-				<div class="modal-title">
-					<label>Generated PageObject</label>
-					<div id="modal-close" onclick="closeModal();">
+		<div class="modal modal--hidden" id="output-modal">
+			<div class="modal__content">
+				<div class="modal-header">
+					<label class="modal-header__title">Generated PageObject</label>
+					<div class="modal-header__close" onclick="closeModal();">
 						&times;
 					</div>
 				</div>
 
-				<textarea id="output" spellcheck="false"></textarea>
-				
+				<textarea class="modal__textarea" id="output" spellcheck="false"></textarea>
+
 				<div class="modal-footer">
-					<button id="copy-to-clipboard-button" class="button" onclick="copyToClipboard();">
+					<button class="modal-footer__button" id="copy-to-clipboard-button" onclick="copyToClipboard();">
 						Copy To Clipboard
 					</button>
 				</div>
