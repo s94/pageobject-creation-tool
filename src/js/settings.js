@@ -72,10 +72,10 @@ function addElementTypeToTableFromTemplate(elementType, generalMethodTemplate, g
 function addElementTypeToTableValidation(elementType, generalMethodTemplate) {
 	let retVal = true;
 
-	if (elementType.value == null || elementType.value.length <= 0) {
+	if (elementType.value == null || elementType.value.trim().length <= 0) {
 		retVal = false;
 	}
-	if (generalMethodTemplate.value == null || generalMethodTemplate.value.length <= 0) {
+	if (generalMethodTemplate.value == null || generalMethodTemplate.value.trim().length <= 0) {
 		retVal = false;
 	}
 
@@ -83,7 +83,7 @@ function addElementTypeToTableValidation(elementType, generalMethodTemplate) {
 }
 
 function saveTemplate() {
-	const templateName = document.getElementById("template-name").value;
+	const templateName = document.getElementById("template-name").value.trim();
 	const checkArrayForExisting = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
 
 	let templateObject = {
@@ -95,10 +95,14 @@ function saveTemplate() {
 
 	const templateTableRows = document.getElementById(elementTableId).rows;
 
+	if (templateTableRows.length <= 0) {
+		return;
+	}
+
 	for (i = 0; i < templateTableRows.length; i++) {
-		const elementType = templateTableRows[i].children[0].textContent;
-		const generalMethodTemplate = templateTableRows[i].children[1].textContent;
-		const getMethodTemplate = templateTableRows[i].children[2].textContent;
+		const elementType = templateTableRows[i].children[0].textContent.trim();
+		const generalMethodTemplate = templateTableRows[i].children[1].textContent.trim();
+		const getMethodTemplate = templateTableRows[i].children[2].textContent.trim();
 
 		templateObject.ElementType.push([elementType, generalMethodTemplate, getMethodTemplate]);
 	}

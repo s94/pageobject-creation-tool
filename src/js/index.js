@@ -78,10 +78,10 @@ function addElementToTable() {
 function addElementToTableValidation(elementName, elementType) {
 	let retVal = true;
 
-	if (elementName.value == null || elementName.value.length <= 0) {
+	if (elementName.value == null || elementName.value.trim().length <= 0) {
 		retVal = false;
 	}
-	if (elementType.selectedOptions[0].textContent.length <= 0) {
+	if (elementType.selectedOptions[0].textContent.length <= 0 || elementType.selectedOptions[0].hidden == true) {
 		retVal = false;
 	}
 
@@ -89,8 +89,8 @@ function addElementToTableValidation(elementName, elementType) {
 }
 
 function generatePageObject() {
-	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
-	const pageObjectName = document.getElementById("pageobject-name").value;
+	const templateName = document.getElementById("template-list").selectedOptions[0].textContent.trim();
+	const pageObjectName = document.getElementById("pageobject-name").value.trim();
 
 	if (templateName.length <= 0 || pageObjectName.length <= 0) {
 		return;
@@ -98,6 +98,10 @@ function generatePageObject() {
 
 	let elementTableContent = [];
 	const elementTableRows = document.getElementById(elementTableId).rows;
+
+	if (elementTableRows.length <= 0) {
+		return;
+	}
 
 	for (i = 0; i < elementTableRows.length; i++) {
 		const elementName = elementTableRows[i].children[0].textContent;
