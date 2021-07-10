@@ -73,6 +73,9 @@ function addElementToTable() {
 		elementId.value = null;
 		includeGet.checked = false;
 	}
+	else {
+		showError("Element cannot be added to the table, submission is not valid.");
+	}
 }
 
 function addElementToTableValidation(elementName, elementType) {
@@ -92,7 +95,12 @@ function generatePageObject() {
 	const templateName = document.getElementById("template-list").selectedOptions[0].textContent.trim();
 	const pageObjectName = document.getElementById("pageobject-name").value.trim();
 
-	if (templateName.length <= 0 || pageObjectName.length <= 0) {
+	if (templateName.length <= 0) {
+		showError("Unable to generate PageObject, a template is required.");
+		return;
+	}
+	else if (pageObjectName.length <= 0) {
+		showError("Unable to generate PageObject, a PageObject name is required.");
 		return;
 	}
 
@@ -100,6 +108,7 @@ function generatePageObject() {
 	const elementTableRows = document.getElementById(elementTableId).rows;
 
 	if (elementTableRows.length <= 0) {
+		showError("Unable to generate PageObject, element table cannot be empty.");
 		return;
 	}
 

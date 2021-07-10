@@ -13,6 +13,7 @@
 	color: var(--clr-baby-powder);
 	margin: 0;
 	box-sizing: border-box;
+	outline: none;
 }
 
 body {
@@ -20,12 +21,26 @@ body {
 }
 
 .header {
+	position: fixed;
+	top: 0;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	background-color: var(--clr-raisin-black);
 	box-shadow: 0px 4px 10px 0px var(--clr-onyx);
 	padding: 1rem;
+}
+
+.header div {
+	width: 20%;
+}
+
+.header div:last-of-type {
+	text-align: end;
+}
+
+.header--error {
+	background-color: var(--clr-antique-ruby);
 }
 
 .header__title {
@@ -45,6 +60,19 @@ body {
 	color: var(--clr-raisin-black);
 	border: 1px solid var(--clr-baby-powder);
 	border-radius: 4px;
+}
+
+.error {
+	width: 60% !important;
+	text-align: center;
+}
+
+.error--hidden {
+	display: none;
+}
+
+.main {
+	margin-top: 4rem;
 }
 
 .main,

@@ -10,9 +10,12 @@
 		<script src="js/settings.js" type="text/javascript" async></script>
 	</head>
 	<body onload="populateTemplateList();">
-		<header class="header">
+		<header class="header w-fill-available">
 			<div class="header__title">pageobject-creation-tool</div>
-			<a class="header__link" href="index.html">Home</a>
+			<div class="error error--hidden"></div>
+			<div>
+				<a class="header__link" href="index.html">Home</a>
+			</div>
 		</header>
 		<main class="main">
 			<form class="form" spellcheck="false">
@@ -25,7 +28,7 @@
 						<button class="form__button mr-1 w-4" id="edit-template" type="button" onclick="loadTemplate();" >
 							Edit
 						</button>
-						<button class="form__button form__button--remove mr-1" id="delete-template" type="button" onclick="deleteTemplate();">
+						<button class="form__button form__button--remove m-auto" id="delete-template" type="button" onclick="deleteTemplate();">
 							Delete
 						</button>
 					</div>
@@ -45,6 +48,8 @@
 					<label class="form__label mandatory">PageObject Structure</label>
 					<textarea class="form__textarea" id="pageobject-structure" style="min-height: 15em;" placeholder="Variables available: ${PageObjectName}, ${Elements}, ${GeneralMethods} and ${GetMethods}"></textarea>
 				</div>
+
+				<hr class="w-fill-available mt-1" />
 
 				<div class="form__item">
 					<label class="form__label mandatory">Element Type</label>

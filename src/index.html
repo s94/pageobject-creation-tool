@@ -10,15 +10,18 @@
 		<script src="js/index.js" type="text/javascript" async></script>
 	</head>
 	<body onload="populateTemplateList();">
-		<header class="header">
+		<header class="header w-fill-available">
 			<div class="header__title">pageobject-creation-tool</div>
-			<a class="header__link" href="settings.html">Settings</a>
+			<div class="error error--hidden"></div>
+			<div>
+				<a class="header__link" href="settings.html">Settings</a>
+			</div>
 		</header>
 		<main class="main">
 			<form class="form">
 				<div class="form__items w-fill-available">
 					<div class="form__item w-fill-available">
-						<label class="form__label">Select Template</label>
+						<label class="form__label mandatory">Select Template</label>
 						<select class="form__select w-fill-available" id="template-list" onchange="loadElementTypeList();">
 							<option value="0"></option>
 						</select>

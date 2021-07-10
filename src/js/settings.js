@@ -4,6 +4,7 @@ function loadTemplate() {
 	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
 
 	if (templateName.length <= 0) {
+		showError("Unable to load template, no template is selected.");
 		return;
 	}
 
@@ -50,6 +51,9 @@ function addElementTypeToTable() {
 		generalMethodTemplateCell.value = null;
 		getMethodTemplateCell.value = null;
 	}
+	else {
+		showError("Element cannot be added to the table, submission is not valid.");
+	}
 }
 
 function addElementTypeToTableFromTemplate(elementType, generalMethodTemplate, getMethodTemplate) {
@@ -84,18 +88,30 @@ function addElementTypeToTableValidation(elementType, generalMethodTemplate) {
 
 function saveTemplate() {
 	const templateName = document.getElementById("template-name").value.trim();
+	const elementDeclaration = document.getElementById("element-declaration-template").value;
+	const pageObjectStructure = document.getElementById("pageobject-structure").value;
 	const checkArrayForExisting = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
+
+	if (elementDeclaration.length <= 0) {
+		showError("Unable to save template, element declaration is required.");
+		return;
+	}
+	else if (pageObjectStructure.length <= 0) {
+		showError("Unable to save template, PageObject structure is required.");
+		return;
+	}
 
 	let templateObject = {
 		TemplateName: templateName,
-		ElementDeclaration: document.getElementById("element-declaration-template").value,
+		ElementDeclaration: elementDeclaration.trim(),
 		ElementType: [],
-		PageObjectStructure: document.getElementById("pageobject-structure").value
+		PageObjectStructure: pageObjectStructure.trim()
 	}
 
 	const templateTableRows = document.getElementById(elementTableId).rows;
 
 	if (templateTableRows.length <= 0) {
+		showError("Unable to save template, element table cannot be empty.");
 		return;
 	}
 
@@ -124,12 +140,16 @@ function saveTemplate() {
 		fs.writeFileSync(path.resolve(__dirname, templateFile), jsonData);
 		populateTemplateList();
 	}
+	else {
+		showError("Unable to save template, template name is required.");
+	}
 }
 
 function deleteTemplate() {
 	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
 
 	if (templateName.length <= 0) {
+		showError("Unable to delete template, no template is selected.");
 		return;
 	}
 
