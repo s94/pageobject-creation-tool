@@ -127,17 +127,17 @@ function generatePageObject() {
 		elementsStringBuilder += elementDeclaration.replace('${ElementName}', elementTableContent[i][0]).replace('${ElementType}', elementTableContent[i][1]).replace('${ElementId}', elementTableContent[i][2]);
 
 		const generalMethodTemplate = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][1];
-		generalMethodsStringBuilder += generalMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]);
+		generalMethodsStringBuilder += generalMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]).replaceAll('${ElementType}', elementTableContent[i][1]);
 
 		const getMethodTemplate = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][2];
 
 		if(elementTableContent[i][3] === 'true') {
-			getMethodsStringBuilder += getMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]);
+			getMethodsStringBuilder += getMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]).replaceAll('${ElementType}', elementTableContent[i][1]);
 		}
 	}
 
 	const output = pageObjectStructure.replaceAll('${PageObjectName}', pageObjectName).replace('${Elements}', elementsStringBuilder).replace('${GeneralMethods}', generalMethodsStringBuilder).replace('${GetMethods}', getMethodsStringBuilder);
-	outputElement.value = output;
+	outputElement.textContent = output.replaceAll('\\n', '\n').replaceAll('\\t', '\t');
 
 	modalElement.classList.remove('modal--hidden');
 }

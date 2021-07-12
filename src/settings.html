@@ -41,12 +41,12 @@
 
 				<div class="form__item">
 					<label class="form__label mandatory">Element Template</label>
-					<textarea class="form__textarea" id="element-declaration-template" placeholder="Variables available: ${ElementName}, ${ElementType} and ${ElementId}"></textarea>
+					<textarea class="form__textarea" id="element-declaration-template" placeholder="Variables available: ${ElementName}, ${ElementType}, ${ElementId}, \n, and \t"></textarea>
 				</div>
 
 				<div class="form__item">
 					<label class="form__label mandatory">PageObject Structure</label>
-					<textarea class="form__textarea" id="pageobject-structure" style="min-height: 15em;" placeholder="Variables available: ${PageObjectName}, ${Elements}, ${GeneralMethods} and ${GetMethods}"></textarea>
+					<textarea class="form__textarea" id="pageobject-structure" style="min-height: 15em;" placeholder="Variables available: ${PageObjectName}, ${Elements}, ${GeneralMethods}, ${GetMethods}, \n and \t"></textarea>
 				</div>
 
 				<hr class="w-fill-available mt-1" />
@@ -58,12 +58,12 @@
 
 				<div class="form__item">
 					<label class="form__label mandatory">General Method Template</label>
-					<textarea class="form__textarea" id="general-method-template" placeholder="Variables available: ${ElementName}"></textarea>
+					<textarea class="form__textarea" id="general-method-template" placeholder="Variables available: ${ElementName}, ${ElementType}, \n and \t"></textarea>
 				</div>
 
 				<div class="form__item">
 					<label class="form__label">Get Method Template</label>
-					<textarea class="form__textarea" id="get-method-template" placeholder="Variables available: ${ElementName}" ></textarea>
+					<textarea class="form__textarea" id="get-method-template" placeholder="Variables available: ${ElementName}, ${ElementType}, \n and \t" ></textarea>
 				</div>
 
 				<button class="form__button" id="add-button" type="button" onclick="addElementTypeToTable();" >
