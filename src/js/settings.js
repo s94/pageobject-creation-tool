@@ -1,168 +1,148 @@
-const elementTableId = "element-type-table";
+// Elements
+const templateNameElement = document.getElementById('template-name');
+const elementTemplateElement = document.getElementById('element-declaration-template');
+const pageObjectStructureElement = document.getElementById('pageobject-structure');
+const elementTypeElement = document.getElementById('element-type');
+const generalMethodTemplateElement = document.getElementById('general-method-template');
+const getMethodTemplateElement = document.getElementById('get-method-template');
+const elementTableElement = document.getElementById('element-type-table');
 
 function loadTemplate() {
-	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
+	const templateName = templateListElement.selectedOptions[0].textContent;
 
-	if (templateName.length <= 0) {
-		showError("Unable to load template, no template is selected.");
+	if(templateName.length <= 0) {
+		showError('Unable to load template, no template is selected.');
 		return;
 	}
 
-	const elementTable = document.getElementById(elementTableId);
-	while (elementTable.hasChildNodes()) {
-		elementTable.removeChild(elementTable.lastChild);
+	while(elementTableElement.hasChildNodes()) {
+		elementTableElement.removeChild(elementTableElement.lastChild);
 	}
 
-	const settingFromArray = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
+	const settingFromArray = settingsFileContent.filter(x => x.TemplateName === templateName)[0];
 	const elementDeclarationTemplate = settingFromArray.ElementDeclaration;
 	const pageObjectStructure = settingFromArray.PageObjectStructure;
 	const elementTypeArray = settingFromArray.ElementType;
 
-	document.getElementById("template-name").value = templateName;
-	document.getElementById("element-declaration-template").value = elementDeclarationTemplate;
-	document.getElementById("pageobject-structure").value = pageObjectStructure;
+	templateNameElement.value = templateName;
+	elementTemplateElement.value = elementDeclarationTemplate;
+	pageObjectStructureElement.value = pageObjectStructure;
 
-	for	(i = 0; i < elementTypeArray.length; i++) {
-		addElementTypeToTableFromTemplate(elementTypeArray[i][0], elementTypeArray[i][1], elementTypeArray[i][2]);
+	for(let i = 0; i < elementTypeArray.length; i++) {
+		addToTable(elementTypeArray[i][0], elementTypeArray[i][1], elementTypeArray[i][2]);
 	}
 }
 
 function addElementTypeToTable() {
-	const elementTable = document.getElementById(elementTableId);
-	const elementType = document.getElementById("element-type");
-	const generalMethodTemplate = document.getElementById("general-method-template");
-	const getMethodTemplate = document.getElementById("get-method-template");
+	let isValid = true;
+	if(elementTypeElement.value === null || elementTypeElement.value.trim().length <= 0) {
+		isValid = false;
+	}
+	if(generalMethodTemplateElement.value === null || generalMethodTemplateElement.value.trim().length <= 0) {
+		isValid = false;
+	}
 
-	var isValid = addElementTypeToTableValidation(elementType, generalMethodTemplate);
-
-	if (elementTable && isValid) {
-		const row = elementTable.insertRow(-1);
-		const elementTypeCell = row.insertCell(0);
-		const generalMethodTemplateCell = row.insertCell(1);
-		const getMethodTemplateCell = row.insertCell(2);
-		const removeCell = row.insertCell(3);
-
-		elementTypeCell.innerHTML = elementType.value;
-		generalMethodTemplateCell.innerHTML = generalMethodTemplate.value;
-		getMethodTemplateCell.innerHTML = getMethodTemplate.value;
-		removeCell.innerHTML = removeButtonHtml;
-
-		elementType.value = null;
-		generalMethodTemplateCell.value = null;
-		getMethodTemplateCell.value = null;
+	if(elementTableElement && isValid) {
+		addToTable(elementTypeElement.value, generalMethodTemplateElement.value, getMethodTemplateElement.value);
+		elementTypeElement.value = null;
+		generalMethodTemplateElement.value = null;
+		getMethodTemplateElement.value = null;
 	}
 	else {
-		showError("Element cannot be added to the table, submission is not valid.");
+		showError('Element cannot be added to the table, submission is not valid.');
 	}
 }
 
-function addElementTypeToTableFromTemplate(elementType, generalMethodTemplate, getMethodTemplate) {
-	const elementTable = document.getElementById(elementTableId);
+function addToTable(elementType, generalMethodTemplate, getMethodTemplate) {
+	const row = elementTableElement.insertRow(-1);
+	const elementTypeCell = row.insertCell(0);
+	const generalMethodTemplateCell = row.insertCell(1);
+	const getMethodTemplateCell = row.insertCell(2);
+	const removeCell = row.insertCell(3);
 
-	if (elementTable) {
-		const row = elementTable.insertRow(-1);
-		const elementTypeCell = row.insertCell(0);
-		const generalMethodTemplateCell = row.insertCell(1);
-		const getMethodTemplateCell = row.insertCell(2);
-		const removeCell = row.insertCell(3);
-
-		elementTypeCell.innerHTML = elementType;
-		generalMethodTemplateCell.innerHTML = generalMethodTemplate;
-		getMethodTemplateCell.innerHTML = getMethodTemplate;
-		removeCell.innerHTML = removeButtonHtml;
-	}
-}
-
-function addElementTypeToTableValidation(elementType, generalMethodTemplate) {
-	let retVal = true;
-
-	if (elementType.value == null || elementType.value.trim().length <= 0) {
-		retVal = false;
-	}
-	if (generalMethodTemplate.value == null || generalMethodTemplate.value.trim().length <= 0) {
-		retVal = false;
-	}
-
-	return retVal;
+	elementTypeCell.textContent = elementType;
+	generalMethodTemplateCell.textContent = generalMethodTemplate;
+	getMethodTemplateCell.textContent = getMethodTemplate;
+	removeCell.innerHTML = removeButtonHTML;
 }
 
 function saveTemplate() {
-	const templateName = document.getElementById("template-name").value.trim();
-	const elementDeclaration = document.getElementById("element-declaration-template").value;
-	const pageObjectStructure = document.getElementById("pageobject-structure").value;
-	const checkArrayForExisting = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
+	const templateName = templateNameElement.value.trim();
+	const elementTemplate = elementTemplateElement.value;
+	const pageObjectStructure = pageObjectStructureElement.value;
+	const checkArrayForExisting = settingsFileContent.filter(x => x.TemplateName === templateName)[0];
 
-	if (elementDeclaration.length <= 0) {
-		showError("Unable to save template, element declaration is required.");
+	if(elementTemplate.length <= 0) {
+		showError('Unable to save template, element declaration is required.');
 		return;
 	}
-	else if (pageObjectStructure.length <= 0) {
-		showError("Unable to save template, PageObject structure is required.");
+	else if(pageObjectStructure.length <= 0) {
+		showError('Unable to save template, PageObject structure is required.');
 		return;
 	}
 
 	let templateObject = {
 		TemplateName: templateName,
-		ElementDeclaration: elementDeclaration.trim(),
-		ElementType: [],
+		ElementDeclaration: elementTemplate.trim(),
+		ElementType: [ ],
 		PageObjectStructure: pageObjectStructure.trim()
 	}
 
-	const templateTableRows = document.getElementById(elementTableId).rows;
+	const templateTableRows = elementTableElement.rows;
 
-	if (templateTableRows.length <= 0) {
-		showError("Unable to save template, element table cannot be empty.");
+	if(templateTableRows.length <= 0) {
+		showError('Unable to save template, element table cannot be empty.');
 		return;
 	}
 
-	for (i = 0; i < templateTableRows.length; i++) {
+	for(let i = 0; i < templateTableRows.length; i++) {
 		const elementType = templateTableRows[i].children[0].textContent.trim();
 		const generalMethodTemplate = templateTableRows[i].children[1].textContent.trim();
 		const getMethodTemplate = templateTableRows[i].children[2].textContent.trim();
 
-		templateObject.ElementType.push([elementType, generalMethodTemplate, getMethodTemplate]);
+		templateObject.ElementType = [...templateObject.ElementType, [elementType, generalMethodTemplate, getMethodTemplate]];
 	}
 
-	if (templateName.length > 0 && checkArrayForExisting !== undefined) {
-		for (i = 0; i < settingsFileContent.length; i++) {
-			if (settingsFileContent[i].TemplateName == templateName) {
+	if(templateName.length > 0 && checkArrayForExisting !== undefined) {
+		for(let i = 0; i < settingsFileContent.length; i++) {
+			if(settingsFileContent[i].TemplateName === templateName) {
 				settingsFileContent[i] = templateObject;
-				let jsonData = JSON.stringify(settingsFileContent);
-				fs.writeFileSync(path.resolve(__dirname, templateFile), jsonData);
-				populateTemplateList();
+				writeToTemplateFile(JSON.stringify(settingsFileContent));
 				break;
 			}
 		}
 	}
-	else if (templateName.length > 0 && checkArrayForExisting === undefined) {
-		settingsFileContent.push(templateObject);
-		let jsonData = JSON.stringify(settingsFileContent);
-		fs.writeFileSync(path.resolve(__dirname, templateFile), jsonData);
-		populateTemplateList();
+	else if(templateName.length > 0 && checkArrayForExisting === undefined) {
+		settingsFileContent = [...settingsFileContent, templateObject];
+		writeToTemplateFile(JSON.stringify(settingsFileContent));
 	}
 	else {
-		showError("Unable to save template, template name is required.");
+		showError('Unable to save template, template name is required.');
 	}
 }
 
 function deleteTemplate() {
-	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
+	const templateName = templateListElement.selectedOptions[0].textContent;
 
-	if (templateName.length <= 0) {
-		showError("Unable to delete template, no template is selected.");
+	if(templateName.length <= 0) {
+		showError('Unable to delete template, no template is selected.');
 		return;
 	}
 
 	let index = 0;
 
-	for (i = 0; i < settingsFileContent.length; i++) {
-		if (settingsFileContent[i].TemplateName == templateName) {
+	for(let i = 0; i < settingsFileContent.length; i++) {
+		if(settingsFileContent[i].TemplateName === templateName) {
 			index = i;
+			break;
 		}
 	}
 
 	settingsFileContent.splice(index, 1);
-	let jsonData = JSON.stringify(settingsFileContent);
+	writeToTemplateFile(JSON.stringify(settingsFileContent));
+}
+
+function writeToTemplateFile(jsonData) {
 	fs.writeFileSync(path.resolve(__dirname, templateFile), jsonData);
 	populateTemplateList();
 }

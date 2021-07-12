@@ -1,159 +1,153 @@
-const elementTableId = "element-table";
+// Elements
+const pageObjectNameElement = document.getElementById('pageobject-name');
+const elementNameElement = document.getElementById('element-name');
+const elementTypeElement = document.getElementById('element-type');
+const elementIdElement = document.getElementById('element-id');
+const includeGetElement = document.getElementById('include-get');
+const elementTableElement = document.getElementById('element-table');
+const outputElement = document.getElementById('output');
+const modalElement = document.getElementById('output-modal');
 
-function loadElementTypeList() {
-	const elementType = document.getElementById("element-type");
-	const templateName = document.getElementById("template-list").selectedOptions[0].textContent;
+function populateElementTypeList() {
+	const templateName = templateListElement.selectedOptions[0].textContent;
 
-	let option = document.createElement("option");
+	let optionElement = document.createElement('option');
 
-	if (templateName.length > 0) {
-		const settingFromArray = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
+	if(templateName.length > 0) {
+		const settingFromArray = settingsFileContent.filter(x => x.TemplateName === templateName)[0];
 
-		while (elementType.hasChildNodes()) {
-			elementType.removeChild(elementType.lastChild);
+		while(elementTypeElement.hasChildNodes()) {
+			elementTypeElement.removeChild(elementTypeElement.lastChild);
 		}
 	
-		let elementTypeList = [];
-		for (i = 0; i < settingFromArray.ElementType.length; i++) {
-			elementTypeList.push(settingFromArray.ElementType[i]);
+		let elementTypeArray = [ ];
+		for(let i = 0; i < settingFromArray.ElementType.length; i++) {
+			elementTypeArray = [...elementTypeArray, settingFromArray.ElementType[i]];
 		}
 
-		option.value = "";
-		option.selected = true;
-		option.disabled = true;
-		option.hidden = true;
-		option.innerHTML = "Please select...";
-		elementType.appendChild(option);
+		optionElement.value = '';
+		optionElement.selected = true;
+		optionElement.disabled = true;
+		optionElement.hidden = true;
+		optionElement.textContent = 'Please select...';
+		elementTypeElement.appendChild(optionElement);
 
-		option = document.createElement("option");
-		option.value = 0;
-		elementType.appendChild(option);
+		optionElement = document.createElement('option');
+		optionElement.value = 0;
+		elementTypeElement.appendChild(optionElement);
 	
-		for (i = 0; i < elementTypeList.length; i++) {
-			let option = document.createElement("option");
-			option.value = i + 1;
-			option.innerHTML = elementTypeList[i][0];
-			elementType.appendChild(option);
+		for(let i = 0; i < elementTypeArray.length; i++) {
+			const optionElement = document.createElement('option');
+			optionElement.value = i + 1;
+			optionElement.textContent = elementTypeArray[i][0];
+			elementTypeElement.appendChild(optionElement);
 		}
 	}
 	else {
-		while (elementType.hasChildNodes()) {
-			elementType.removeChild(elementType.lastChild);
+		while(elementTypeElement.hasChildNodes()) {
+			elementTypeElement.removeChild(elementTypeElement.lastChild);
 		}
-		option.value = 0;
-		elementType.appendChild(option);
+		optionElement.value = 0;
+		elementTypeElement.appendChild(optionElement);
 	}
 }
 
 function addElementToTable() {
-	const elementTable = document.getElementById(elementTableId);
-	const elementName = document.getElementById("element-name");
-	const elementType = document.getElementById("element-type");
-	const elementId = document.getElementById("element-id");
-	const includeGet = document.getElementById("include-get");
+	let isValid = true;
+	if(elementNameElement.value === null || elementNameElement.value.trim().length <= 0) {
+		isValid = false;
+	}
+	if(elementTypeElement.selectedOptions[0].textContent.length <= 0 || elementTypeElement.selectedOptions[0].hidden) {
+		isValid = false;
+	}
 
-	let isValid = addElementToTableValidation(elementName, elementType);
-
-	if (elementTable && isValid) {
-		const row = elementTable.insertRow(-1);
+	if(elementTableElement && isValid) {
+		const row = elementTableElement.insertRow(-1);
 		const elementNameCell = row.insertCell(0);
 		const elementTypeCell = row.insertCell(1);
 		const elementIdCell = row.insertCell(2);
 		const getCell = row.insertCell(3);
 		const removeCell = row.insertCell(4);
 
-		elementNameCell.innerHTML = elementName.value;
-		elementTypeCell.innerHTML = elementType.selectedOptions[0].textContent;
-		elementIdCell.innerHTML = elementId.value;
-		getCell.innerHTML = includeGet.checked;
-		removeCell.innerHTML = removeButtonHtml;
+		elementNameCell.textContent = elementNameElement.value;
+		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
+		elementIdCell.textContent = elementIdElement.value;
+		getCell.textContent = includeGetElement.checked;
+		removeCell.innerHTML = removeButtonHTML;
 
-		elementName.value = null;
-		elementType.selectedIndex = 0;
-		elementId.value = null;
-		includeGet.checked = false;
+		elementNameElement.value = null;
+		elementTypeElement.selectedIndex = 0;
+		elementIdElement.value = null;
+		includeGetElement.checked = false;
 	}
 	else {
-		showError("Element cannot be added to the table, submission is not valid.");
+		showError('Element cannot be added to the table, submission is not valid.');
 	}
-}
-
-function addElementToTableValidation(elementName, elementType) {
-	let retVal = true;
-
-	if (elementName.value == null || elementName.value.trim().length <= 0) {
-		retVal = false;
-	}
-	if (elementType.selectedOptions[0].textContent.length <= 0 || elementType.selectedOptions[0].hidden == true) {
-		retVal = false;
-	}
-
-	return retVal;
 }
 
 function generatePageObject() {
-	const templateName = document.getElementById("template-list").selectedOptions[0].textContent.trim();
-	const pageObjectName = document.getElementById("pageobject-name").value.trim();
+	const templateName = templateListElement.selectedOptions[0].textContent.trim();
+	const pageObjectName = pageObjectNameElement.value.trim();
 
-	if (templateName.length <= 0) {
-		showError("Unable to generate PageObject, a template is required.");
+	if(templateName.length <= 0) {
+		showError('Unable to generate PageObject, a template is required.');
 		return;
 	}
-	else if (pageObjectName.length <= 0) {
-		showError("Unable to generate PageObject, a PageObject name is required.");
-		return;
-	}
-
-	let elementTableContent = [];
-	const elementTableRows = document.getElementById(elementTableId).rows;
-
-	if (elementTableRows.length <= 0) {
-		showError("Unable to generate PageObject, element table cannot be empty.");
+	else if(pageObjectName.length <= 0) {
+		showError('Unable to generate PageObject, a PageObject name is required.');
 		return;
 	}
 
-	for (i = 0; i < elementTableRows.length; i++) {
+	let elementTableContent = [ ];
+	const elementTableRows = elementTableElement.rows;
+
+	if(elementTableRows.length <= 0) {
+		showError('Unable to generate PageObject, element table cannot be empty.');
+		return;
+	}
+
+	for(let i = 0; i < elementTableRows.length; i++) {
 		const elementName = elementTableRows[i].children[0].textContent;
 		const elementType = elementTableRows[i].children[1].textContent;
 		const elementId = elementTableRows[i].children[2].textContent;
 		const includeGet = elementTableRows[i].children[3].textContent;
 
-		elementTableContent.push([elementName, elementType, elementId, includeGet]);
+		elementTableContent = [...elementTableContent, [elementName, elementType, elementId, includeGet]];
 	}
 
-	const settingFromArray = settingsFileContent.filter(x => x.TemplateName == templateName)[0];
+	const settingFromArray = settingsFileContent.filter(x => x.TemplateName === templateName)[0];
 	const pageObjectStructure = settingFromArray.PageObjectStructure;
 	const elementDeclaration = settingFromArray.ElementDeclaration;
 
-	let elementsString = "";
-	let generalMethodsString = "";
-	let getMethodsString = "";
+	let elementsStringBuilder = '';
+	let generalMethodsStringBuilder = '';
+	let getMethodsStringBuilder = '';
 
-	for (i = 0; i < elementTableContent.length; i++) {
-		elementsString += elementDeclaration.replace("${ElementName}", elementTableContent[i][0]).replace("${ElementType}", elementTableContent[i][1]).replace("${ElementId}", elementTableContent[i][2]);
+	for(let i = 0; i < elementTableContent.length; i++) {
+		elementsStringBuilder += elementDeclaration.replace('${ElementName}', elementTableContent[i][0]).replace('${ElementType}', elementTableContent[i][1]).replace('${ElementId}', elementTableContent[i][2]);
 
-		let generalMethodTemplate = settingFromArray.ElementType.filter(x => x[0] == elementTableContent[i][1])[0][1];
-		generalMethodsString += generalMethodTemplate.replaceAll("${ElementName}", elementTableContent[i][0]);
+		const generalMethodTemplate = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][1];
+		generalMethodsStringBuilder += generalMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]);
 
-		let getMethodTemplate = settingFromArray.ElementType.filter(x => x[0] == elementTableContent[i][1])[0][2];
+		const getMethodTemplate = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][2];
 
-		if (elementTableContent[i][3] == "true") {
-			getMethodsString += getMethodTemplate.replaceAll("${ElementName}", elementTableContent[i][0]);
+		if(elementTableContent[i][3] === 'true') {
+			getMethodsStringBuilder += getMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]);
 		}
 	}
 
-	let output = pageObjectStructure.replaceAll("${PageObjectName}", pageObjectName).replace("${Elements}", elementsString).replace("${GeneralMethods}", generalMethodsString).replace("${GetMethods}", getMethodsString);
-	document.getElementById("output").value = output;
+	const output = pageObjectStructure.replaceAll('${PageObjectName}', pageObjectName).replace('${Elements}', elementsStringBuilder).replace('${GeneralMethods}', generalMethodsStringBuilder).replace('${GetMethods}', getMethodsStringBuilder);
+	outputElement.value = output;
 
-	document.getElementById("output-modal").classList.remove("modal--hidden");
+	modalElement.classList.remove('modal--hidden');
 }
 
 function closeModal() {
-	document.getElementById("output-modal").classList.add("modal--hidden");
+	modalElement.classList.add('modal--hidden');
 }
 
 function copyToClipboard() {
-	let textToCopy = document.getElementById("output").value;
+	const textToCopy = outputElement.value;
 
 	navigator.clipboard.writeText(textToCopy).then(function() {
 		return true;

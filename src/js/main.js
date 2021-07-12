@@ -1,20 +1,19 @@
 const { app, BrowserWindow } = require('electron');
 
-function createWindow () {
-	const win = new BrowserWindow({
-		minWidth: 1000,
+function createWindow() {
+	const browserWindow = new BrowserWindow({
+		height: 720,
 		width: 1000,
 		minHeight: 720,
-		height: 720,
+		minWidth: 1000,
 		webPreferences: {
 			nodeIntegration: true,
-			contextIsolation: false
-		}
+			contextIsolation: false,
+		},
 	});
 
-	win.loadFile('src/index.html');
-
-	win.removeMenu();
+	browserWindow.loadFile('src/index.html');
+	browserWindow.removeMenu();
 }
 
 app.whenReady().then(() => {
