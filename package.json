@@ -5,9 +5,10 @@
   "description": "Creates PageObjects to be used for automated testing.",
   "main": "src/js/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "npx tsc && electron ."
   },
   "devDependencies": {
-    "electron": "^18.0.4"
+    "electron": "^18.0.4",
+    "typescript": "^4.6.3"
   }
 }
