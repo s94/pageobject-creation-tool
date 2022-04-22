@@ -92,10 +92,10 @@ function addElementToTable(): void {
 
 function generatePageObject(): void {
 	const templateListSelectedOption: HTMLOptionElement = templateListElement.selectedOptions[0];
-	const templateName: string | null = templateListSelectedOption.textContent?.trim() ?? null;
+	const templateName: string = templateListSelectedOption.textContent?.trim() ?? '';
 	const pageObjectName: string = pageObjectNameElement.value.trim();
 
-	if(templateName && templateName.length <= 0) {
+	if(templateName.length <= 0) {
 		showError('Unable to generate PageObject, a template is required.');
 		return;
 	}

@@ -5,10 +5,51 @@
   "description": "Creates PageObjects to be used for automated testing.",
   "main": "src/js/main.js",
   "scripts": {
-    "start": "npx tsc && electron ."
+    "start": "electron-forge start",
+    "test": "npx tsc && electron-forge make && playwright test",
+    "package": "electron-forge package",
+    "make": "npx tsc && electron-forge make"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "@playwright/test": "^1.21.1",
     "electron": "^18.0.4",
+    "electron-playwright-helpers": "^1.1.1",
+    "playwright": "^1.21.1",
     "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "pageobject_creation_tool"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
