@@ -70,7 +70,7 @@ function saveTemplate(): void {
 	const templateName: string = templateNameElement?.value.trim() ?? '';
 	const elementTemplate: string = elementTemplateElement?.value ?? '';
 	const pageObjectStructure: string = pageObjectStructureElement?.value ?? '';
-	const checkArrayForExisting: boolean = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0] ? true : false;
+	const checkArrayForExisting: PageObjectTemplate | undefined = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
 
 	if(elementTemplate.length <= 0) {
 		showError('Unable to save template, element declaration is required.');
