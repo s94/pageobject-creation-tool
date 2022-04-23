@@ -5,6 +5,17 @@ import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-pla
 let electronApp: ElectronApplication;
 let currentWindow: Page;
 
+let error_Div: Locator;
+let template_SelectList: Locator;
+let pageObjectName_Textbox: Locator;
+let elementType_SelectList: Locator;
+let elementName_Textbox: Locator;
+let elementId_Textbox: Locator;
+let includeGet_Checkbox: Locator;
+let addElementToTable_Button: Locator;
+let element_Table: Locator;
+let generatePageObject_Button: Locator;
+
 test.beforeEach(async () => {
 	const latestBuild: string = findLatestBuild();
 	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
@@ -33,45 +44,108 @@ test.afterEach(async () => {
 });
 
 test('application title is \'pageobject-creation-tool\'', async() => {
-	const appTitle: string = await currentWindow.title();
-	return expect(appTitle).toBe('pageobject-creation-tool');
+	expect(await currentWindow.title()).toBe('pageobject-creation-tool');
 });
 
 test('window count equals one', async () => {
-	const count: number = electronApp.windows().length;
-	return expect(count).toBe(1);
+	expect(electronApp.windows().length).toBe(1);
 });
 
 test('template list contains \'Example Template\'', async () => {
-	await currentWindow.waitForSelector('#template-list');
-	const templateListElement: Locator = currentWindow.locator('#template-list');
-	await templateListElement.selectOption({ label: 'Example Template' });
-	const selectedValue: string = await templateListElement.textContent();
-	return expect(selectedValue).toBe('Example Template');
+	const template_SelectList: Locator = currentWindow.locator('#template-list');
+	await template_SelectList.selectOption({ label: 'Example Template' });
+	expect(await template_SelectList.textContent()).toBe('Example Template');
 });
 
 test('include get checkbox is unchecked by default', async () => {
-	const includeGetCheckboxElement: Locator = currentWindow.locator('#include-get');
-	const isIncludeGetCheckboxSelected: boolean = await includeGetCheckboxElement.isChecked();
-	return expect(isIncludeGetCheckboxSelected).toBe(false);
+	const includeGet_Checkbox: Locator = currentWindow.locator('#include-get');
+	expect(await includeGet_Checkbox.isChecked()).toBe(false);
 });
 
 test('has the correct title', async () => {
-	const headerTitleElement: Locator = currentWindow.locator('.header__title');
-	const headerTitleText: string = await headerTitleElement.textContent();
-	return expect(headerTitleText).toBe('pageobject-creation-tool');
+	const headerTitle_Div: Locator = currentWindow.locator('.header__title');
+	expect(await headerTitle_Div.textContent()).toBe('pageobject-creation-tool');
 });
 
 test.describe('correct error is shown when clicking \'Generate\' with no template selected', async () => {
-	test('PageObject Name and Element Table is also blank', async () => {
-		const errorElement: Locator =  currentWindow.locator('.error');
-		const generateButtonElement: Locator = currentWindow.locator('#generate-pageobject');
+	const expectedError: string = 'Unable to generate PageObject, a template is required.';
 
-		expect(await errorElement.isVisible(), 'error element is incorrectly displayed').toBe(false);
-		expect(await errorElement.textContent(), 'error element text is not blank').toBe('');
-		
-		await generateButtonElement.click();
-		expect(await errorElement.isVisible(), 'error element is incorrectly hidden').toBe(true);
-		expect(await errorElement.textContent(), 'error element text is blank').toBe('Unable to generate PageObject, a template is required.');
+	test.beforeEach(async () => {
+		error_Div =  currentWindow.locator('.error');
+		template_SelectList = currentWindow.locator('#template-list');
+		pageObjectName_Textbox = currentWindow.locator('#pageobject-name');
+		elementType_SelectList = currentWindow.locator('#element-type');
+		elementName_Textbox = currentWindow.locator('#element-name');
+		elementId_Textbox = currentWindow.locator('#element-id');
+		includeGet_Checkbox = currentWindow.locator('#include-get');
+		addElementToTable_Button = currentWindow.locator('#add-button');
+		element_Table = currentWindow.locator('#element-table');
+		generatePageObject_Button = currentWindow.locator('#generate-pageobject');
+
+		expect(await error_Div.isVisible(), 'error element is incorrectly displayed').toBe(false);
+		expect(await error_Div.textContent(), 'error element text is not blank').toBe('');
+	});
+
+	test.afterEach(async () => {
+		await generatePageObject_Button.click();
+		expect(await error_Div.isVisible(), 'error element is incorrectly hidden').toBe(true);
+		expect(await error_Div.textContent(), 'error element text is blank').toBe(expectedError);
+	});
+
+	test('PageObject Name: blank, Element Table: blank', async () => {
+		expect(await pageObjectName_Textbox.textContent()).toBe('');
+		expect(await element_Table.locator('tr').count()).toBe(0);
+	});
+
+	test('PageObject Name: populated, Element Table: blank', async () => {
+		await pageObjectName_Textbox.type('Testing');
+		expect(await pageObjectName_Textbox.inputValue()).toBe('Testing');
+		expect(await element_Table.locator('tr').count()).toBe(0);
+	});
+
+	test('PageObject Name: blank, Element Table: populated', async () => {
+		// first select an option from the template list, required in order to add an element to the table.
+		await template_SelectList.selectOption({ label: 'Example Template' });
+		expect(await template_SelectList.textContent()).toBe('Example Template');
+
+		// ensure pageObjectName_Textbox is blank
+		expect(await pageObjectName_Textbox.inputValue()).toBe('');
+
+		await elementType_SelectList.selectOption({ value: '1' });
+		expect(await elementType_SelectList.inputValue()).toBe('1');
+
+		await elementName_Textbox.type('TestElement');
+		expect(await elementName_Textbox.inputValue()).toBe('TestElement');
+
+		await addElementToTable_Button.click();
+
+		expect(await element_Table.locator('tr').count()).toBe(1);
+
+		// revert the template list selection after the element has been added to the table
+		await template_SelectList.selectOption({ value: '0' });
+		expect(await template_SelectList.inputValue()).toBe('0');
+	});
+
+	test('PageObject Name: populated, Element Table: populated', async () => {
+		// first select an option from the template list, required in order to add an element to the table.
+		await template_SelectList.selectOption({ label: 'Example Template' });
+		expect(await template_SelectList.textContent()).toBe('Example Template');
+
+		await pageObjectName_Textbox.type('Testing');
+		expect(await pageObjectName_Textbox.inputValue()).toBe('Testing');
+
+		await elementType_SelectList.selectOption({ value: '1' });
+		expect(await elementType_SelectList.inputValue()).toBe('1');
+
+		await elementName_Textbox.type('TestElement');
+		expect(await elementName_Textbox.inputValue()).toBe('TestElement');
+
+		await addElementToTable_Button.click();
+
+		expect(await element_Table.locator('tr').count()).toBe(1);
+
+		// revert the template list selection after the element has been added to the table
+		await template_SelectList.selectOption({ value: '0' });
+		expect(await template_SelectList.inputValue()).toBe('0');
 	});
 });
