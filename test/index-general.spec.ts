@@ -31,7 +31,7 @@ test.beforeEach(async () => {
 });
 
 test.afterEach(async () => {
-	await electronApp.close()
+	await electronApp.close();
 });
 
 test('application title is \'pageobject-creation-tool\'', async() => {
@@ -57,4 +57,4 @@ test('has the correct title', async () => {
 
 test('link to settings page is displayed', async () => {
 	expect(await indexPage.isSettingsLinkDisplayed()).toBe(true);
-})
+});
