@@ -3,9 +3,10 @@ import { ElectronApplication, _electron as electron } from 'playwright';
 import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
 import { SelectListAttribute } from './enum/select-list-attribute';
 import { IndexPage } from './page/index/index-page';
+import { SettingsPage } from './page/settings/settings-page'
 
 let electronApp: ElectronApplication;
-let indexPage: IndexPage;
+let settingsPage: SettingsPage;
 
 test.beforeEach(async () => {
 	const latestBuild: string = findLatestBuild();
@@ -27,7 +28,9 @@ test.beforeEach(async () => {
 		});
 	});
 
-	indexPage = new IndexPage(await electronApp.firstWindow());
+	const indexPage = new IndexPage(await electronApp.firstWindow());
+	await indexPage.clickSettingsLink();
+	settingsPage = new SettingsPage(await electronApp.firstWindow());
 });
 
 test.afterEach(async () => {
@@ -35,7 +38,7 @@ test.afterEach(async () => {
 });
 
 test('application title is \'pageobject-creation-tool\'', async() => {
-	expect(await indexPage.getPageTitle()).toBe('pageobject-creation-tool');
+	expect(await settingsPage.getPageTitle()).toBe('pageobject-creation-tool settings');
 });
 
 test('window count equals one', async () => {
@@ -43,18 +46,14 @@ test('window count equals one', async () => {
 });
 
 test('template list contains \'Example Template\'', async () => {
-	await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
-});
-
-test('include get checkbox is unchecked by default', async () => {
-	expect(await indexPage.isIncludeGetChecked()).toBe(false);
+	await settingsPage.selectTemplate('Example Template', SelectListAttribute.label);
+	expect(await settingsPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
 });
 
 test('has the correct title', async () => {
-	expect(await indexPage.getHeaderTitleValue()).toBe('pageobject-creation-tool');
+	expect(await settingsPage.getHeaderTitleValue()).toBe('pageobject-creation-tool');
 });
 
-test('link to settings page is displayed', async () => {
-	expect(await indexPage.isSettingsLinkDisplayed()).toBe(true);
+test('link to home page is displayed', async () => {
+	expect(await settingsPage.isHomeLinkDisplayed()).toBe(true);
 })

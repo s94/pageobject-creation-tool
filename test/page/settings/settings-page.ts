@@ -24,7 +24,7 @@ export class SettingsPage extends PageBase {
 		await this.home_Link.click();
 	}
 
-	async selecttemplateList(templateListToSelect: string, selectListAttribute: SelectListAttribute): Promise<void> {
+	async selectTemplate(templateListToSelect: string, selectListAttribute: SelectListAttribute): Promise<void> {
 		switch(selectListAttribute) {
 			case SelectListAttribute.label:
 				await this.templateList_SelectList.selectOption({ label: templateListToSelect });
@@ -73,6 +73,10 @@ export class SettingsPage extends PageBase {
 
 	async clickSaveTemplateButton(): Promise<void> {
 		await this.saveTemplate_Button.click();
+	}
+
+	async isHomeLinkDisplayed(): Promise<boolean> {
+		return await this.home_Link.isVisible();
 	}
 
 	async getTemplateListValue(selectListAttribute: SelectListAttribute): Promise<string> {

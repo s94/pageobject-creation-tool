@@ -37,15 +37,18 @@ test.beforeEach(async () => {
 });
 
 test.afterEach(async () => {
-	await indexPage.clickGeneratePageObjectButton();
-	expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-	expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
-	await electronApp.close()
+	await electronApp.close();
 });
 
 test.describe('correct error is shown when clicking \'Generate\' with no template selected', async () => {
 	test.beforeAll(async () => {
 		expectedErrorMsg = 'Unable to generate PageObject, a template is required.';
+	});
+
+	test.afterEach(async () => {
+		await indexPage.clickGeneratePageObjectButton();
+		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
+		expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
 	});
 
 	test('PageObject Name: blank, Element Table: blank', async () => {
@@ -92,6 +95,12 @@ test.describe('correct error is shown when clicking \'Generate\' with no PageObj
 		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
 	});
 
+	test.afterEach(async () => {
+		await indexPage.clickGeneratePageObjectButton();
+		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
+		expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+	});
+
 	test('Template Name: populated, Element Table: blank', async () => {
 		// Template Name populated in test.beforeEach();
 		// Check for blank Element Table also done in test.beforeEach();
@@ -114,5 +123,23 @@ test.describe('correct error is shown when clicking \'Generate\' with the elemen
 		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
 		await indexPage.enterPageObjectName('Testing');
 		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
+	});
+});
+
+test.describe('no error is shown when clicking \'Generate\' when a template selected, PageObject Name and element table is populated', async () => {
+	test('Template Name: populated, PageObject Name: populated, Element Table: populated', async () => {
+		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		await indexPage.enterPageObjectName('Testing');
+		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
+		await indexPage.selectElementType('1', SelectListAttribute.value);
+		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
+		await indexPage.enterElementName('TestElement');
+		expect(await indexPage.getElementNameValue()).toBe('TestElement');
+		await indexPage.clickAddElementToTableButton();
+		expect(await indexPage.getElementTableRowCount()).toBe(1);
+		await indexPage.clickGeneratePageObjectButton();
+		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
+		expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
 	});
 });

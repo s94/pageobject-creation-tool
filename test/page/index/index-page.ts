@@ -68,6 +68,10 @@ export class IndexPage extends PageBase {
 		await this.generatePageObject_Button.click();
 	}
 
+	async isSettingsLinkDisplayed(): Promise<boolean> {
+		return await this.settings_Link.isVisible();
+	}
+
 	async getTemplateListValue(selectListAttribute: SelectListAttribute): Promise<string> {
 		switch(selectListAttribute) {
 			case SelectListAttribute.label:
@@ -103,6 +107,6 @@ export class IndexPage extends PageBase {
 	}
 
 	async getElementTableRowCount(): Promise<number> {
-		return this.element_Table.locator('tr').count();
+		return await this.element_Table.locator('tr').count();
 	}
 }
