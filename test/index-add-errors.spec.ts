@@ -33,7 +33,7 @@ test.beforeEach(async () => {
 	expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
 	expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
 	await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+	expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 });
 
 test.afterEach(async () => {

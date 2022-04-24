@@ -14,6 +14,7 @@ export class SettingsPage extends PageBase {
 	private get generalMethodTemplate_Textbox(): Locator { return this.page.locator('#general-method-template'); }
 	private get getMethodTemplate_Textbox(): Locator { return this.page.locator('#get-method-template'); }
 	private get addElementTypeToTable_Button(): Locator { return this.page.locator('#add-button'); }
+	private get elementType_Table(): Locator { return this.page.locator('#element-type-table'); }
 	private get saveTemplate_Button(): Locator { return this.page.locator('#save-template'); }
 
 	constructor(page: Page) {
@@ -110,5 +111,9 @@ export class SettingsPage extends PageBase {
 
 	async getGetMethodTemplateValue(): Promise<string> {
 		return await this.getMethodTemplate_Textbox.inputValue();
+	}
+
+	async getElementTypeTableRowCount(): Promise<number> {
+		return await this.elementType_Table.locator('tr').count();
 	}
 }
