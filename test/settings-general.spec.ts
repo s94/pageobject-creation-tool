@@ -37,7 +37,7 @@ test.afterEach(async () => {
 	await electronApp.close()
 });
 
-test('application title is \'pageobject-creation-tool\'', async() => {
+test('application title is \'pageobject-creation-tool settings\'', async() => {
 	expect(await settingsPage.getPageTitle()).toBe('pageobject-creation-tool settings');
 });
 
