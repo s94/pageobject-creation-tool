@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ElectronApplication, _electron as electron } from 'playwright';
 import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
-import { SelectListAttribute } from './enum/select-list-attribute';
 import { IndexPage } from './page/index/index-page';
 import { SettingsPage } from './page/settings/settings-page'
 
@@ -36,7 +35,7 @@ test.beforeEach(async () => {
 });
 
 test.afterEach(async () => {
-	await electronApp.close()
+	await electronApp.close();
 });
 
 test.describe('correct error is shown when clicking \'Add\' with Element Type and/or General Method Template not populated', async () => {
