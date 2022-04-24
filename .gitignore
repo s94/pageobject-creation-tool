@@ -105,3 +105,6 @@ dist
 
 # OS Specific
 .DS_Store
+
+# electron-forge make output
+out/
