@@ -6,6 +6,7 @@ import { IndexPage } from './page/index/index-page';
 import { SettingsPage } from './page/settings/settings-page'
 
 let electronApp: ElectronApplication;
+let indexPage: IndexPage;
 let settingsPage: SettingsPage;
 
 test.beforeEach(async () => {
@@ -28,7 +29,7 @@ test.beforeEach(async () => {
 		});
 	});
 
-	const indexPage = new IndexPage(await electronApp.firstWindow());
+	indexPage = new IndexPage(await electronApp.firstWindow());
 	await indexPage.clickSettingsLink();
 	settingsPage = new SettingsPage(await electronApp.firstWindow());
 });
@@ -47,7 +48,7 @@ test('window count equals one', async () => {
 
 test('template list contains \'Example Template\'', async () => {
 	await settingsPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await settingsPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+	expect(await settingsPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 });
 
 test('has the correct title', async () => {

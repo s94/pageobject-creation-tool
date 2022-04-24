@@ -99,7 +99,7 @@ export class IndexPage extends PageBase {
 	}
 
 	async getElementIdValue(): Promise<string> {
-		return await this.elementId_Textbox.textContent();
+		return await this.elementId_Textbox.inputValue();
 	}
 
 	async isIncludeGetChecked(): Promise<boolean> {

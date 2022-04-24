@@ -62,7 +62,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no templat
 	
 	test('PageObject Name: blank, Element Table: populated', async () => {
 		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 		await indexPage.selectElementType('1', SelectListAttribute.value);
 		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
 		await indexPage.enterElementName('TestElement');
@@ -75,7 +75,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no templat
 	
 	test('PageObject Name: populated, Element Table: populated', async () => {
 		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 		await indexPage.enterPageObjectName('Testing');
 		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
 		await indexPage.selectElementType('1', SelectListAttribute.value);
@@ -92,7 +92,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no PageObj
 	test.beforeEach(async () => {
 		expectedErrorMsg = 'Unable to generate PageObject, a PageObject name is required.';
 		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 	});
 
 	test.afterEach(async () => {
@@ -120,7 +120,7 @@ test.describe('correct error is shown when clicking \'Generate\' with the elemen
 	test('Template Name: populated, PageObject Name: populated', async () => {
 		expectedErrorMsg = 'Unable to generate PageObject, element table cannot be empty.';
 		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 		await indexPage.enterPageObjectName('Testing');
 		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
 	});
@@ -129,7 +129,7 @@ test.describe('correct error is shown when clicking \'Generate\' with the elemen
 test.describe('no error is shown when clicking \'Generate\' when a template selected, PageObject Name and element table is populated', async () => {
 	test('Template Name: populated, PageObject Name: populated, Element Table: populated', async () => {
 		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 		await indexPage.enterPageObjectName('Testing');
 		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
 		await indexPage.selectElementType('1', SelectListAttribute.value);

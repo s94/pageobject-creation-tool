@@ -44,7 +44,7 @@ test('window count equals one', async () => {
 
 test('template list contains \'Example Template\'', async () => {
 	await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.label)).toBe('Example Template');
+	expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
 });
 
 test('include get checkbox is unchecked by default', async () => {
