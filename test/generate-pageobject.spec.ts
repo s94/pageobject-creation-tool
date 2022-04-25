@@ -28,49 +28,17 @@ test('create template > use template > generate pageobject', async () => {
 	});
 
 	const templateName: string = 'generate-pageobject-test';
-	const elementTemplate: string = '\tprivate get ${ElementName}_${ElementType}(): Locator { return this.page.locator(\'${ElementId}\'); }\n';
-	const pageObjectStructure: string = `import { Locator, Page } from '@playwright/test'
-	import { PageBase } from '../page-base'
-	export class \${PageObjectName} extends PageBase {
-		\${Elements}
-	
-		constructor(page: Page) {
-			super(page);
-		}
-	
-		\${GeneralMethods}
-	
-		\${GetMethods}
-	}`
+	const elementTemplate: string = '\\tprivate get ${ElementName}_${ElementType}(): Locator { return this.page.locator(\'${ElementId}\'); }\\n';
+	const pageObjectStructure: string = `import { Locator, Page } from \'@playwright/test\';\\nimport { PageBase } from \'../page-base\';\\n\\nexport class \${PageObjectName} extends PageBase {\\n\${Elements}\\n\\tconstructor(page: Page) {\\n\\t\\tsuper(page);\\n\\t}\\n\\n\${GeneralMethods}\\n\\n\${GetMethods}\\n}`;
 	const elementType: string = 'Textbox';
-	const generalMethodTemplate: string = `async enter\${ElementName}(textToEnter: string): Promise<void> {
-			await this.\${ElementName}_\${ElementType}.fill(testToEnter);
-		}`
-	const getMethodTemplate: string = `async get\${ElementName}Value(): Promise<string> {
-			return await this.\${ElementName}_\${ElementType}.inputValue();
-		}`
+	const generalMethodTemplate: string = '\\tasync enter\${ElementName}(textToEnter: string): Promise<void> {\\n\\t\\tawait this.\${ElementName}_\${ElementType}.fill(textToEnter);\\n\\t}';
+	const getMethodTemplate: string = '\\tasync get\${ElementName}Value(): Promise<string> {\\n\\t\\treturn await this.\${ElementName}_\${ElementType}.inputValue();\\n\\t}';
 
 	const pageObjectName: string = 'TestPageObject';
 	const elementName: string = 'testElement';
 	const elementId: string = '#test-id';
 
-	const generatedPageObjectOutput: string = `import { Locator, Page } from '@playwright/test'
-	import { PageBase } from '../page-base'
-	export class ${pageObjectName} extends PageBase {
-		private get ${elementName}_${elementType}(): Locator { return this.page.locator(\'${elementId}\'); }
-	
-		constructor(page: Page) {
-			super(page);
-		}
-	
-		async enter${elementName}(textToEnter: string): Promise<void> {
-			await this.${elementName}_${elementType}.fill(testToEnter);
-		}
-	
-		async get${elementName}Value(): Promise<string> {
-			return await this.${elementName}_${elementType}.inputValue();
-		}
-	}`
+	const generatedPageObjectOutput: string = `import { Locator, Page } from \'@playwright/test\';\nimport { PageBase } from \'../page-base\';\n\nexport class ${pageObjectName} extends PageBase {\n\tprivate get ${elementName}_${elementType}(): Locator { return this.page.locator(\'${elementId}\'); }\n\n\tconstructor(page: Page) {\n\t\tsuper(page);\n\t}\n\n\tasync enter${elementName}(textToEnter: string): Promise<void> {\n\t\tawait this.${elementName}_${elementType}.fill(textToEnter);\n\t}\n\n\tasync get${elementName}Value(): Promise<string> {\n\t\treturn await this.${elementName}_${elementType}.inputValue();\n\t}\n}`;
 
 	const indexPage: IndexPage = new IndexPage(await electronApp.firstWindow());
 	await indexPage.clickSettingsLink();
