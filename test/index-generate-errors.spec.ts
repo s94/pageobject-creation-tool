@@ -3,6 +3,7 @@ import { ElectronApplication, _electron as electron } from 'playwright';
 import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
 import { SelectListAttribute } from './enum/select-list-attribute';
 import { IndexPage } from './page/index/index-page';
+import { GeneratedPageObjectModal } from './page/index/generated-pageobject-modal';
 
 let electronApp: ElectronApplication;
 let indexPage: IndexPage;
@@ -141,5 +142,7 @@ test.describe('no error is shown when clicking \'Generate\' when a template sele
 		await indexPage.clickGeneratePageObjectButton();
 		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
 		expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
+		const generatedPageObjectModal: GeneratedPageObjectModal = new GeneratedPageObjectModal(await electronApp.firstWindow());
+		expect(await generatedPageObjectModal.isOutputModalDisplayed()).toBe(true);
 	});
 });
