@@ -7,9 +7,9 @@ const getMethodTemplateElement: HTMLTextAreaElement = document.getElementById('g
 const elementTypeTableElement: HTMLTableElement = document.getElementById('element-type-table') as HTMLTableElement;
 
 function loadTemplate(): void {
-	const templateName: string = templateListElement?.selectedOptions[0].textContent ?? "";
+	const templateName: string | null = templateListElement?.selectedOptions[0].textContent;
 
-	if(templateName && templateName.length <= 0) {
+	if(templateName === null || templateName.length <= 0) {
 		showError('Unable to load template, no template is selected.');
 		return;
 	}
@@ -123,7 +123,7 @@ function saveTemplate(): void {
 function deleteTemplate(): void {
 	const templateName: string | null = templateListElement?.selectedOptions[0].textContent;
 
-	if(templateName && templateName.length <= 0) {
+	if(templateName === null || templateName.length <= 0) {
 		showError('Unable to delete template, no template is selected.');
 		return;
 	}
@@ -141,7 +141,21 @@ function deleteTemplate(): void {
 	writeToTemplateFile(JSON.stringify(settingsFileContent));
 }
 
+function clearTemplateForm(): void {
+	templateNameElement.value = '';
+	elementTemplateElement.value = '';
+	pageObjectStructureElement.value = '';
+	generalMethodTemplateElement.value = '';
+	getMethodTemplateElement.value = '';
+	const templateTableRows: HTMLCollectionOf<HTMLTableRowElement> = elementTypeTableElement?.rows;
+
+	for(let i: number = 0; i < templateTableRows.length; i++) {
+		templateTableRows[i].remove();
+	}
+}
+
 function writeToTemplateFile(jsonData: string): void {
 	fs.writeFileSync(path.resolve(__dirname, templateFile), jsonData);
 	populateTemplateList();
+	clearTemplateForm();
 }
