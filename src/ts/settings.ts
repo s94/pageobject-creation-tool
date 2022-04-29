@@ -9,12 +9,12 @@ const elementTypeTableElement: HTMLTableElement = document.getElementById('eleme
 function loadTemplate(): void {
 	const templateName: string | null = templateListElement?.selectedOptions[0].textContent;
 
-	if(templateName === null || templateName.length <= 0) {
+	if (templateName === null || templateName.length <= 0) {
 		showError('Unable to load template, no template is selected.');
 		return;
 	}
 
-	while(elementTypeTableElement?.hasChildNodes() && elementTypeTableElement.lastChild) {
+	while (elementTypeTableElement?.hasChildNodes() && elementTypeTableElement.lastChild) {
 		elementTypeTableElement.removeChild(elementTypeTableElement.lastChild);
 	}
 
@@ -27,7 +27,7 @@ function loadTemplate(): void {
 	elementTemplateElement.value = elementDeclarationTemplate;
 	pageObjectStructureElement.value = pageObjectStructure;
 
-	for(let i: number = 0; i < elementTypeArray.length; i++) {
+	for (let i: number = 0; i < elementTypeArray.length; i++) {
 		addToTable(elementTypeArray[i][0], elementTypeArray[i][1], elementTypeArray[i][2]);
 	}
 }
@@ -35,14 +35,14 @@ function loadTemplate(): void {
 function addElementTypeToTable(): void {
 	const elementTypeElement: HTMLInputElement = document.getElementById('element-type') as HTMLInputElement;
 	let isValid = true;
-	if(elementTypeElement.value === null || elementTypeElement.value.trim().length <= 0) {
+	if (elementTypeElement.value === null || elementTypeElement.value.trim().length <= 0) {
 		isValid = false;
 	}
-	if(generalMethodTemplateElement.value === null || generalMethodTemplateElement.value.trim().length <= 0) {
+	if (generalMethodTemplateElement.value === null || generalMethodTemplateElement.value.trim().length <= 0) {
 		isValid = false;
 	}
 
-	if(elementTypeTableElement && isValid) {
+	if (elementTypeTableElement && isValid) {
 		addToTable(elementTypeElement.value, generalMethodTemplateElement.value, getMethodTemplateElement.value);
 		elementTypeElement.value = '';
 		generalMethodTemplateElement.value = '';
@@ -72,11 +72,11 @@ function saveTemplate(): void {
 	const pageObjectStructure: string = pageObjectStructureElement?.value ?? '';
 	const checkArrayForExisting: PageObjectTemplate | undefined = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
 
-	if(elementTemplate.length <= 0) {
+	if (elementTemplate.length <= 0) {
 		showError('Unable to save template, element declaration is required.');
 		return;
 	}
-	else if(pageObjectStructure.length <= 0) {
+	else if (pageObjectStructure.length <= 0) {
 		showError('Unable to save template, PageObject structure is required.');
 		return;
 	}
@@ -85,12 +85,12 @@ function saveTemplate(): void {
 
 	const templateTableRows: HTMLCollectionOf<HTMLTableRowElement> = elementTypeTableElement?.rows;
 
-	if(templateTableRows.length <= 0) {
+	if (templateTableRows.length <= 0) {
 		showError('Unable to save template, element table cannot be empty.');
 		return;
 	}
 
-	for(let i: number = 0; i < templateTableRows.length; i++) {
+	for (let i: number = 0; i < templateTableRows.length; i++) {
 		const templateTableRow: HTMLTableRowElement = templateTableRows[i];
 		const elementTypeTableRowCell: HTMLTableCellElement = templateTableRow.children[0] as HTMLTableCellElement;
 		const generalMethodTemplateTableRowCell: HTMLTableCellElement = templateTableRow.children[1] as HTMLTableCellElement;
@@ -102,16 +102,16 @@ function saveTemplate(): void {
 		templateObject.ElementType = [...templateObject.ElementType, [elementType, generalMethodTemplate, getMethodTemplate]];
 	}
 
-	if(templateName.length > 0 && checkArrayForExisting !== undefined) {
-		for(let i: number = 0; i < settingsFileContent.length; i++) {
-			if(settingsFileContent[i].TemplateName === templateName) {
+	if (templateName.length > 0 && checkArrayForExisting !== undefined) {
+		for (let i: number = 0; i < settingsFileContent.length; i++) {
+			if (settingsFileContent[i].TemplateName === templateName) {
 				settingsFileContent[i] = templateObject;
 				writeToTemplateFile(JSON.stringify(settingsFileContent));
 				break;
 			}
 		}
 	}
-	else if(templateName.length > 0 && checkArrayForExisting === undefined) {
+	else if (templateName.length > 0 && checkArrayForExisting === undefined) {
 		settingsFileContent = [...settingsFileContent, templateObject];
 		writeToTemplateFile(JSON.stringify(settingsFileContent));
 	}
@@ -123,15 +123,15 @@ function saveTemplate(): void {
 function deleteTemplate(): void {
 	const templateName: string | null = templateListElement?.selectedOptions[0].textContent;
 
-	if(templateName === null || templateName.length <= 0) {
+	if (templateName === null || templateName.length <= 0) {
 		showError('Unable to delete template, no template is selected.');
 		return;
 	}
 
 	let index: number = 0;
 
-	for(let i: number = 0; i < settingsFileContent.length; i++) {
-		if(settingsFileContent[i].TemplateName === templateName) {
+	for (let i: number = 0; i < settingsFileContent.length; i++) {
+		if (settingsFileContent[i].TemplateName === templateName) {
 			index = i;
 			break;
 		}
@@ -149,7 +149,7 @@ function clearTemplateForm(): void {
 	getMethodTemplateElement.value = '';
 	const templateTableRows: HTMLCollectionOf<HTMLTableRowElement> = elementTypeTableElement?.rows;
 
-	for(let i: number = 0; i < templateTableRows.length; i++) {
+	for (let i: number = 0; i < templateTableRows.length; i++) {
 		templateTableRows[i].remove();
 	}
 }

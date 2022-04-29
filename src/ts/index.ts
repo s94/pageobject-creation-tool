@@ -13,13 +13,13 @@ function populateElementTypeList(): void {
 
 	let optionElement: HTMLOptionElement = document.createElement('option');
 
-	if(templateName && templateName.length > 0) {
+	if (templateName && templateName.length > 0) {
 		const settingFromArray: PageObjectTemplate = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
 
 		removeChildFromElementType();
 	
 		let elementTypeArray: string[][] = [ ];
-		for(let i: number = 0; i < settingFromArray.ElementType.length; i++) {
+		for (let i: number = 0; i < settingFromArray.ElementType.length; i++) {
 			elementTypeArray = [...elementTypeArray, settingFromArray.ElementType[i]];
 		}
 
@@ -34,7 +34,7 @@ function populateElementTypeList(): void {
 		optionElement.value = '0';
 		elementTypeElement.appendChild(optionElement);
 	
-		for(let i: number = 0; i < elementTypeArray.length; i++) {
+		for (let i: number = 0; i < elementTypeArray.length; i++) {
 			const optionElement = document.createElement('option');
 			optionElement.value = (i + 1).toString();
 			optionElement.textContent = elementTypeArray[i][0];
@@ -48,7 +48,7 @@ function populateElementTypeList(): void {
 	}
 
 	function removeChildFromElementType(): void {
-		while(elementTypeElement.hasChildNodes() && elementTypeElement.lastChild) {
+		while (elementTypeElement.hasChildNodes() && elementTypeElement.lastChild) {
 			elementTypeElement.removeChild(elementTypeElement.lastChild);
 		}
 	}
@@ -59,14 +59,14 @@ function addElementToTable(): void {
 	const elementTypeSelectedText: string = elementTypeSelectedOption.textContent ?? '';
 
 	let isValid: boolean = true;
-	if(elementNameElement.value === null || elementNameElement.value.trim().length <= 0) {
+	if (elementNameElement.value === null || elementNameElement.value.trim().length <= 0) {
 		isValid = false;
 	}
-	if(elementTypeSelectedText.length <= 0 || elementTypeSelectedOption.hidden) {
+	if (elementTypeSelectedText.length <= 0 || elementTypeSelectedOption.hidden) {
 		isValid = false;
 	}
 
-	if(elementTableElement && isValid) {
+	if (elementTableElement && isValid) {
 		const row: HTMLTableRowElement = elementTableElement.insertRow(-1);
 		const elementNameCell: HTMLTableCellElement = row.insertCell(0);
 		const elementTypeCell: HTMLTableCellElement = row.insertCell(1);
@@ -95,11 +95,11 @@ function generatePageObject(): void {
 	const templateName: string = templateListSelectedOption.textContent?.trim() ?? '';
 	const pageObjectName: string = pageObjectNameElement.value.trim();
 
-	if(templateName.length <= 0) {
+	if (templateName.length <= 0) {
 		showError('Unable to generate PageObject, a template is required.');
 		return;
 	}
-	else if(pageObjectName.length <= 0) {
+	else if (pageObjectName.length <= 0) {
 		showError('Unable to generate PageObject, a PageObject name is required.');
 		return;
 	}
@@ -107,12 +107,12 @@ function generatePageObject(): void {
 	let elementTableContent: string[][] = [ ];
 	const elementTableRows: HTMLCollectionOf<HTMLTableRowElement> = elementTableElement.rows;
 
-	if(elementTableRows.length <= 0) {
+	if (elementTableRows.length <= 0) {
 		showError('Unable to generate PageObject, element table cannot be empty.');
 		return;
 	}
 
-	for(let i: number = 0; i < elementTableRows.length; i++) {
+	for (let i: number = 0; i < elementTableRows.length; i++) {
 		const elementName: string = elementTableRows[i].children[0].textContent ?? '';
 		const elementType: string = elementTableRows[i].children[1].textContent ?? '';
 		const elementId: string = elementTableRows[i].children[2].textContent ?? '';
@@ -129,7 +129,7 @@ function generatePageObject(): void {
 	let generalMethodsStringBuilder: string = '';
 	let getMethodsStringBuilder: string = '';
 
-	for(let i: number = 0; i < elementTableContent.length; i++) {
+	for (let i: number = 0; i < elementTableContent.length; i++) {
 		elementsStringBuilder += elementDeclaration.replace('${ElementName}', elementTableContent[i][0]).replace('${ElementType}', elementTableContent[i][1]).replace('${ElementId}', elementTableContent[i][2]);
 
 		const generalMethodTemplate: string = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][1];
@@ -137,7 +137,7 @@ function generatePageObject(): void {
 
 		const getMethodTemplate: string = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][2];
 
-		if(elementTableContent[i][3] === 'true') {
+		if (elementTableContent[i][3] === 'true') {
 			getMethodsStringBuilder += getMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]).replaceAll('${ElementType}', elementTableContent[i][1]);
 		}
 	}

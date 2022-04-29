@@ -13,7 +13,7 @@ let settingsFileContent: PageObjectTemplate[] = JSON.parse(rawData);
 let errorMessageTimeout: NodeJS.Timeout | null = null;
 
 function populateTemplateList(): void {
-	while(templateListElement?.hasChildNodes() && templateListElement.lastChild) {
+	while (templateListElement?.hasChildNodes() && templateListElement.lastChild) {
 		templateListElement.removeChild(templateListElement.lastChild);
 	}
 
@@ -21,7 +21,7 @@ function populateTemplateList(): void {
 	optionElement.value = '0';
 	templateListElement?.appendChild(optionElement);
 
-	for(let i: number = 0; i < settingsFileContent.length; i++) {
+	for (let i: number = 0; i < settingsFileContent.length; i++) {
 		const optionElement: HTMLOptionElement = document.createElement('option');
 		optionElement.value = (i + 1).toString();
 		optionElement.innerHTML = settingsFileContent[i].TemplateName;
@@ -38,10 +38,10 @@ function deleteRowFromTable(buttonElement: HTMLButtonElement): void {
 }
 
 function showError(errorMessage: string): void {
-	if(errorElement.textContent === errorMessage) {
+	if (errorElement.textContent === errorMessage) {
 		return;
 	}
-	else if(errorMessageTimeout !== null) {
+	else if (errorMessageTimeout !== null) {
 		clearTimeout(errorMessageTimeout);
 		errorMessageTimeout = null;
 	}
@@ -58,7 +58,6 @@ function showError(errorMessage: string): void {
 }
 
 class PageObjectTemplate {
-
 	public readonly TemplateName: string;
 	public readonly ElementDeclaration: string;
 	public ElementType: string[][];
