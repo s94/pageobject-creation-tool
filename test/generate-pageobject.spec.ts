@@ -7,6 +7,8 @@ import { IndexService } from './service/index-service';
 import { SettingsService } from './service/settings-service';
 import { ElementType, PageObject, PageObjectElement, PageObjectTemplate } from './test-types';
 import { TestData } from './test-data';
+import { SettingsPageError } from './enum/settings-page-error';
+import { IndexPageError } from './enum/index-page-error';
 
 test('create template > use template > validate generated pageobject', async () => {
 	const electronApp: ElectronApplication = await getTestElectronApp();
@@ -34,12 +36,14 @@ test('create template > use template > validate generated pageobject', async () 
 	const elementTypeModel: ElementType = { elementTypeName: testElementType, generalMethodTemplate: testGeneralMethodTemplate, getMethodTemplate: testGetMethodTemplate };
 	const pageObjectTemplate: PageObjectTemplate = { templateName: testTemplateName, elementTemplate: testElementTemplate, elementTypes: [elementTypeModel], pageObjectStructure: testPageObjectStructure };
 	await settingsService.createTemplate(pageObjectTemplate);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 
 	// use template
 	const pageObjectElement: PageObjectElement = { elementType: testElementType, elementName: testElementName, elementId: testElementId, includeGet: true };
 	const pageObject: PageObject = { templateName: testTemplateName, pageObjectName: testPageObjectName, pageObjectElements: [pageObjectElement] };
 	await settingsPage.clickHomeLink();
 	await indexService.generatePageObject(pageObject);
+	await indexService.checkForErrors(IndexPageError.Blank);
 
 	// validate generated pageobject
 	const generatedPageObjectModal: GeneratedPageObjectModal = new GeneratedPageObjectModal(await electronApp.firstWindow());

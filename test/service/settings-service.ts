@@ -22,10 +22,17 @@ export class SettingsService {
 		await this.settingsPage.clickSaveTemplateButton();
 	}
 
-	public async editTemplate(pageObjectTemplate: PageObjectTemplate): Promise<void> {
+	public async editTemplate(pageObjectTemplate: PageObjectTemplate, existingElementsCount: number): Promise<void> {
 		await this.settingsPage.selectTemplate(pageObjectTemplate.templateName, SelectListAttribute.Label);
 		expect(await this.settingsPage.getTemplateListValue(SelectListAttribute.Label)).toContain(pageObjectTemplate.templateName);
-		this.createTemplate(pageObjectTemplate);
+		await this.settingsPage.clickEditTemplateButton();
+		expect(await this.settingsPage.getTemplateNameValue()).toBe(pageObjectTemplate.templateName);
+		await this.settingsPage.enterElementTemplate(pageObjectTemplate.elementTemplate);
+		expect(await this.settingsPage.getElementTemplateValue()).toBe(pageObjectTemplate.elementTemplate);
+		await this.settingsPage.enterPageObjectStructure(pageObjectTemplate.pageObjectStructure);
+		expect(await this.settingsPage.getPageObjectStructureValue()).toBe(pageObjectTemplate.pageObjectStructure);
+		await this.addElementsToTable(pageObjectTemplate.elementTypes, existingElementsCount);
+		await this.settingsPage.clickSaveTemplateButton();
 	}
 
 	public async deleteTemplate(pageObjectTemplateName: string): Promise<void> {
@@ -34,8 +41,8 @@ export class SettingsService {
 		await this.settingsPage.clickDeleteTemplateButton();
 	}
 
-	public async addElementsToTable(elementTypeArray: ElementType[]): Promise<void> {
-		let tableRowNumber: number = 0;
+	public async addElementsToTable(elementTypeArray: ElementType[], existingElementsCount: number = 0): Promise<void> {
+		let tableRowNumber: number = existingElementsCount;
 		for (let i: number = 0; i < elementTypeArray.length; i++) {
 			const elementType: ElementType = elementTypeArray[i];
 			await this.settingsPage.enterElementType(elementType.elementTypeName);
