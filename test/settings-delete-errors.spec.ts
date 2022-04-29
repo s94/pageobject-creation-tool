@@ -1,36 +1,22 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
-import { IndexPage } from './page/index/index-page';
-import { SettingsPage } from './page/settings/settings-page'
-import { SelectListAttribute } from './enum/select-list-attribute';
+import { ElectronApplication, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
+import { SettingsPageError } from './enum/settings-page-error';
+import { IndexPage } from './page/index-page';
+import { SettingsPage } from './page/settings-page';
+import { SettingsService } from './service/settings-service';
+import { ElementType, PageObjectTemplate } from './test-types';
+import { TestData } from './test-data';
 
 let electronApp: ElectronApplication;
-let settingsPage: SettingsPage;
+let settingsService: SettingsService;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	const indexPage = new IndexPage(await electronApp.firstWindow());
 	await indexPage.clickSettingsLink();
-	settingsPage = new SettingsPage(await electronApp.firstWindow());
+	const settingsPage = new SettingsPage(await electronApp.firstWindow());
+	settingsService = new SettingsService(settingsPage);
 });
 
 test.afterEach(async () => {
@@ -38,9 +24,23 @@ test.afterEach(async () => {
 });
 
 test('correct error is shown when clicking \'Delete\' with no Template selected', async () => {
-	const expectedErrorMsg: string = 'Unable to delete template, no template is selected.';
-	expect(await settingsPage.getTemplateListValue(SelectListAttribute.value)).toBe('0');
-	await settingsPage.clickDeleteTemplateButton();
-	expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-	expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+	await settingsService.deleteTemplate(TestData.Blank);
+	await settingsService.checkForErrors(SettingsPageError.UnableToDelete);
+});
+
+test('no error is shown when clicking \'Delete\' with a Template selected', async () => {
+	const testElementType: ElementType = {
+		elementTypeName: TestData.Populated,
+		generalMethodTemplate: TestData.Populated
+	};
+	const testPageObjectTemplate: PageObjectTemplate = {
+		templateName: TestData.uniqueTestTemplateName(),
+		elementTemplate: TestData.Populated, 
+		elementTypes: [testElementType],
+		pageObjectStructure: TestData.Populated
+	};
+
+	await settingsService.createTemplate(testPageObjectTemplate);
+	await settingsService.deleteTemplate(testPageObjectTemplate.templateName);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });
