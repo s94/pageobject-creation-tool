@@ -1,31 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
+import { ElectronApplication, expect, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
 import { SelectListAttribute } from './enum/select-list-attribute';
-import { IndexPage } from './page/index/index-page';
+import { IndexPage } from './page/index-page';
+import { TestData } from './test-data';
 
 let electronApp: ElectronApplication;
 let indexPage: IndexPage;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	indexPage = new IndexPage(await electronApp.firstWindow());
 });
@@ -43,8 +26,8 @@ test('window count equals one', async () => {
 });
 
 test('template list contains \'Example Template\'', async () => {
-	await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
+	await indexPage.selectTemplate(TestData.ExampleTemplate.Name, SelectListAttribute.Label);
+	expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('1');
 });
 
 test('include get checkbox is unchecked by default', async () => {

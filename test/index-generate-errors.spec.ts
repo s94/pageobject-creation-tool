@@ -1,40 +1,22 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
+import { ElectronApplication, expect, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
+import { IndexPageError } from './enum/index-page-error';
 import { SelectListAttribute } from './enum/select-list-attribute';
-import { IndexPage } from './page/index/index-page';
-import { GeneratedPageObjectModal } from './page/index/generated-pageobject-modal';
+import { IndexPage } from './page/index-page';
+import { IndexService } from './service/index-service';
+import { TestData } from './test-data';
+import { PageObject, PageObjectElement } from './test-types';
 
 let electronApp: ElectronApplication;
 let indexPage: IndexPage;
-let expectedErrorMsg: string;
+let indexService: IndexService;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	indexPage = new IndexPage(await electronApp.firstWindow());
-	expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-	expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('0');
-	expect(await indexPage.getPageObjectNameValue()).toBe('');
-	expect(await indexPage.getElementTableRowCount()).toBe(0);
+	indexService = new IndexService(indexPage);
+	await indexService.checkForErrors(IndexPageError.Blank);
 });
 
 test.afterEach(async () => {
@@ -42,107 +24,147 @@ test.afterEach(async () => {
 });
 
 test.describe('correct error is shown when clicking \'Generate\' with no template selected', async () => {
-	test.beforeAll(async () => {
-		expectedErrorMsg = 'Unable to generate PageObject, a template is required.';
-	});
-
 	test.afterEach(async () => {
-		await indexPage.clickGeneratePageObjectButton();
-		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await indexService.checkForErrors(IndexPageError.UnableToGenerate_TemplateRequired);
 	});
 
 	test('PageObject Name: blank, Element Table: blank', async () => {
-		// PageObject Name and Element Table assertions done in test.beforeEach();
+		const pageObject: PageObject = {
+			templateName: TestData.Blank,
+			pageObjectName: TestData.Blank,
+			pageObjectElements: []
+		};
+
+		await indexService.generatePageObject(pageObject);
+	});
+
+	test('PageObject Name: whitespace, Element Table: blank', async () => {
+		const pageObject: PageObject = {
+			templateName: TestData.Blank,
+			pageObjectName: TestData.Whitespace,
+			pageObjectElements: []
+		};
+
+		await indexService.generatePageObject(pageObject);
 	});
 	
 	test('PageObject Name: populated, Element Table: blank', async () => {
-		await indexPage.enterPageObjectName('Testing');
-		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
+		const pageObject: PageObject = {
+			templateName: TestData.Blank,
+			pageObjectName: TestData.Populated,
+			pageObjectElements: []
+		};
+
+		await indexService.generatePageObject(pageObject);
 	});
 	
 	test('PageObject Name: blank, Element Table: populated', async () => {
-		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.getElementTableRowCount()).toBe(1);
-		await indexPage.selectTemplate('0', SelectListAttribute.value);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('0');
+		const pageObjectElement: PageObjectElement = {
+			elementType: TestData.ExampleTemplate.ElementType,
+			elementName: TestData.Populated
+		};
+		const pageObject: PageObject = {
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Blank,
+			pageObjectElements: [pageObjectElement]
+		};
+
+		await indexService.generatePageObject(pageObject, false);
+		await indexPage.selectTemplate('0', SelectListAttribute.Value);
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('0');
+		await indexPage.clickGeneratePageObjectButton();
+	});
+
+	test('PageObject Name: whitespace, Element Table: populated', async () => {
+		const pageObjectElement: PageObjectElement = {
+			elementType: TestData.ExampleTemplate.ElementType,
+			elementName: TestData.Populated
+		};
+		const pageObject: PageObject = { templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Whitespace,
+			pageObjectElements: [pageObjectElement]
+		};
+
+		await indexService.generatePageObject(pageObject, false);
+		await indexPage.selectTemplate('0', SelectListAttribute.Value);
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('0');
+		await indexPage.clickGeneratePageObjectButton();
 	});
 	
 	test('PageObject Name: populated, Element Table: populated', async () => {
-		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterPageObjectName('Testing');
-		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.getElementTableRowCount()).toBe(1);
-		await indexPage.selectTemplate('0', SelectListAttribute.value);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('0');
+		const pageObjectElement: PageObjectElement = {
+			elementType: TestData.ExampleTemplate.ElementType,
+			elementName: TestData.Populated
+		};
+		const pageObject: PageObject = {
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Populated,
+			pageObjectElements: [pageObjectElement]
+		};
+
+		await indexService.generatePageObject(pageObject, false);
+		await indexPage.selectTemplate('0', SelectListAttribute.Value);
+		expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('0');
+		await indexPage.clickGeneratePageObjectButton();
 	});
 });
 
 test.describe('correct error is shown when clicking \'Generate\' with no PageObject name entered', async () => {
-	test.beforeEach(async () => {
-		expectedErrorMsg = 'Unable to generate PageObject, a PageObject name is required.';
-		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
-	});
-
 	test.afterEach(async () => {
-		await indexPage.clickGeneratePageObjectButton();
-		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await indexService.checkForErrors(IndexPageError.UnableToGenerate_PageObjectNameRequired);
 	});
 
 	test('Template Name: populated, Element Table: blank', async () => {
-		// Template Name populated in test.beforeEach();
-		// Check for blank Element Table also done in test.beforeEach();
+		const pageObject: PageObject = { 
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Blank,
+			pageObjectElements: []
+		};
+
+		await indexService.generatePageObject(pageObject);
 	});
 
 	test('Template Name: populated, Element Table: populated', async () => {
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.getElementTableRowCount()).toBe(1);
+		const pageObjectElement: PageObjectElement = {
+			elementType: TestData.ExampleTemplate.ElementType,
+			elementName: TestData.Populated
+		};
+		const pageObject: PageObject = {
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Blank,
+			pageObjectElements: [pageObjectElement]
+		};
+
+		await indexService.generatePageObject(pageObject);
 	});
 });
 
 test.describe('correct error is shown when clicking \'Generate\' with the element table blank', async () => {
 	test('Template Name: populated, PageObject Name: populated', async () => {
-		expectedErrorMsg = 'Unable to generate PageObject, element table cannot be empty.';
-		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterPageObjectName('Testing');
-		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
+		const pageObject: PageObject = {
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Populated,
+			pageObjectElements: []
+		};
+
+		await indexService.generatePageObject(pageObject);
+		await indexService.checkForErrors(IndexPageError.UnableToGenerate_EmptyElementTable);
 	});
 });
 
 test.describe('no error is shown when clicking \'Generate\' when a template selected, PageObject Name and element table is populated', async () => {
 	test('Template Name: populated, PageObject Name: populated, Element Table: populated', async () => {
-		await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-		expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterPageObjectName('Testing');
-		expect(await indexPage.getPageObjectNameValue()).toBe('Testing');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.getElementTableRowCount()).toBe(1);
-		await indexPage.clickGeneratePageObjectButton();
-		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-		expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
-		const generatedPageObjectModal: GeneratedPageObjectModal = new GeneratedPageObjectModal(await electronApp.firstWindow());
-		expect(await generatedPageObjectModal.isOutputModalDisplayed()).toBe(true);
+		const pageObjectElement: PageObjectElement = {
+			elementType: TestData.ExampleTemplate.ElementType,
+			elementName: TestData.Populated
+		};
+		const pageObject: PageObject = {
+			templateName: TestData.ExampleTemplate.Name,
+			pageObjectName: TestData.Populated,
+			pageObjectElements: [pageObjectElement]
+		};
+
+		await indexService.generatePageObject(pageObject);
+		await indexService.checkForErrors(IndexPageError.Blank);
 	});
 });

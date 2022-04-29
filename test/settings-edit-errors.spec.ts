@@ -1,36 +1,24 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
-import { IndexPage } from './page/index/index-page';
-import { SettingsPage } from './page/settings/settings-page'
+import { ElectronApplication, expect, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
 import { SelectListAttribute } from './enum/select-list-attribute';
+import { SettingsPageError } from './enum/settings-page-error';
+import { IndexPage } from './page/index-page';
+import { SettingsPage } from './page/settings-page';
+import { SettingsService } from './service/settings-service';
+import { TestData } from './test-data';
 
 let electronApp: ElectronApplication;
 let settingsPage: SettingsPage;
+let settingsService: SettingsService;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	const indexPage = new IndexPage(await electronApp.firstWindow());
 	await indexPage.clickSettingsLink();
 	settingsPage = new SettingsPage(await electronApp.firstWindow());
+	settingsService = new SettingsService(settingsPage);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });
 
 test.afterEach(async () => {
@@ -38,17 +26,14 @@ test.afterEach(async () => {
 });
 
 test('correct error is shown when clicking \'Edit\' with no Template selected', async () => {
-	const expectedErrorMsg: string = 'Unable to load template, no template is selected.';
-	expect(await settingsPage.getTemplateListValue(SelectListAttribute.value)).toBe('0');
+	expect(await settingsPage.getTemplateListValue(SelectListAttribute.Value)).toBe('0');
 	await settingsPage.clickEditTemplateButton();
-	expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-	expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+	await settingsService.checkForErrors(SettingsPageError.UnableToEdit);
 });
 
 test('no error is shown when clicking \'Edit\' with a Template selected', async () => {
-	await settingsPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await settingsPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
+	await settingsPage.selectTemplate(TestData.ExampleTemplate.Name, SelectListAttribute.Label);
+	expect(await settingsPage.getTemplateListValue(SelectListAttribute.Value)).toBe('1');
 	await settingsPage.clickEditTemplateButton();
-	expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-	expect(await settingsPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });
