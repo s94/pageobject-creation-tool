@@ -54,6 +54,8 @@ function addElementTypeToTable(): void {
 }
 
 function addToTable(elementType: string, generalMethodTemplate: string, getMethodTemplate: string): void {
+	const removeButtonHTML: string = '<button class=\'table__button--remove\' onclick=\'deleteFromTable(this);\'>Remove</button>';
+
 	const row: HTMLTableRowElement = elementTypeTableElement.insertRow(-1);
 	const elementTypeCell: HTMLTableCellElement = row.insertCell(0);
 	const generalMethodTemplateCell: HTMLTableCellElement = row.insertCell(1);
@@ -64,6 +66,14 @@ function addToTable(elementType: string, generalMethodTemplate: string, getMetho
 	generalMethodTemplateCell.textContent = generalMethodTemplate;
 	getMethodTemplateCell.textContent = getMethodTemplate;
 	removeCell.innerHTML = removeButtonHTML;
+}
+
+function deleteFromTable(buttonElement: HTMLButtonElement): void {
+	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
+	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
+	const tableElement: HTMLTableElement = tableRowElement.parentNode as HTMLTableElement;
+	const index: number = tableRowElement.rowIndex - 1;
+	tableElement.deleteRow(index);
 }
 
 function saveTemplate(): void {
