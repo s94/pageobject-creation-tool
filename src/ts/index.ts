@@ -148,7 +148,9 @@ function deleteElementFromTable(buttonElement: HTMLButtonElement): void {
 	const index: number = tableRowElement.rowIndex - 1;
 	tableElement.deleteRow(index);
 
-	resetAddElementForm();
+	if (editElementTableRowIndex !== undefined) {
+		resetAddElementForm();
+	}
 }
 
 function generatePageObject(): void {
