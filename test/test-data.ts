@@ -5,7 +5,8 @@ export class TestData {
 
 	public static ExampleTemplate = {
 		Name: 'Example Template',
-		ElementType: 'Textbox'
+		ElementType_Button: 'Button',
+		ElementType_Textbox: 'Textbox'
 	}
 
 	public static uniqueTestTemplateName(): string {

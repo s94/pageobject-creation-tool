@@ -60,7 +60,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Name an
 	test('Element Name: blank, Element Type: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
 			elementName: TestData.Blank,
-			elementType: TestData.ExampleTemplate.ElementType
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
 		}
 
 		await indexService.addElementsToTable([pageObjectElement]);
@@ -69,7 +69,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Name an
 	test('Element Name: whitespace, Element Type: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
 			elementName: TestData.Whitespace,
-			elementType: TestData.ExampleTemplate.ElementType
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
 		}
 
 		await indexService.addElementsToTable([pageObjectElement]);
@@ -80,7 +80,7 @@ test.describe('no error is shown when clicking \'Add\' when Element Name and Ele
 	test('Element Name: populated, Element Type: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
 			elementName: TestData.Populated,
-			elementType: TestData.ExampleTemplate.ElementType
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
 		}
 
 		await indexService.addElementsToTable([pageObjectElement]);

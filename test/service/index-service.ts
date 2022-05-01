@@ -28,17 +28,14 @@ export class IndexService {
 		for (let i: number = 0; i < pageObjectElementsArray.length; i++) {
 			const pageObjectElement: PageObjectElement = pageObjectElementsArray[i];
 			await this.indexPage.selectElementType(pageObjectElement.elementType, SelectListAttribute.Label);
-			expect(await this.indexPage.getElementTypeValue(SelectListAttribute.Label)).toContain(pageObjectElement.elementType);
 			await this.indexPage.enterElementName(pageObjectElement.elementName);
-			expect(await this.indexPage.getElementNameValue()).toBe(pageObjectElement.elementName);
 			if ((pageObjectElement.elementId !== null && pageObjectElement.elementId !== undefined) || pageObjectElement.elementId?.trim().length > 0) {
 				await this.indexPage.enterElementId(pageObjectElement.elementId);
-				expect(await this.indexPage.getElementIdValue()).toBe(pageObjectElement.elementId);
 			}
 			if ((pageObjectElement.includeGet !== null && pageObjectElement.includeGet !== undefined)) {
 					await this.indexPage.toggleIncludeGetCheckbox(pageObjectElement.includeGet);
-					expect(await this.indexPage.isIncludeGetChecked()).toBe(pageObjectElement.includeGet);
 			}
+			await this.verifyElementWithinForm(pageObjectElement);
 			await this.indexPage.clickAddElementToTableButton();
 
 			if (pageObjectElement.elementType.trim().length > 0 && pageObjectElement.elementName.trim().length > 0) {
@@ -48,6 +45,41 @@ export class IndexService {
 			
 			expect(await this.indexPage.getElementTableRowCount()).toBe(tableRowNumber);
 		}
+	}
+
+	public async editElementFromTable(rowId: number, pageObjectElementToEdit: PageObjectElement, editedPageObjectElement: PageObjectElement) {
+		await this.indexPage.clickEditElementFromTableButton(rowId);
+		expect(await this.indexPage.getAddElementToTableButtonValue()).toBe('Update');
+		await this.verifyElementWithinForm(pageObjectElementToEdit);
+
+		await this.indexPage.enterElementName(editedPageObjectElement.elementName);
+		await this.indexPage.selectElementType(editedPageObjectElement.elementType, SelectListAttribute.Label);
+		await this.indexPage.enterElementId(editedPageObjectElement.elementId);
+		await this.indexPage.toggleIncludeGetCheckbox(editedPageObjectElement.includeGet);
+		await this.indexPage.clickAddElementToTableButton();
+
+		expect(await this.indexPage.getAddElementToTableButtonValue()).toBe('Add');
+	}
+
+	public async verifyElementWithinForm(expectedPageObjectElement: PageObjectElement) {
+		expect(await this.indexPage.getElementNameValue()).toBe(expectedPageObjectElement.elementName);
+		expect(await this.indexPage.getElementTypeValue(SelectListAttribute.Label)).toContain(expectedPageObjectElement.elementType);
+		expect(await this.indexPage.getElementIdValue()).toBe(expectedPageObjectElement.elementId ?? '');
+		expect(await this.indexPage.isIncludeGetChecked()).toBe(expectedPageObjectElement.includeGet ?? false);
+	}
+
+	public async verifyElementsWithinTable(pageObjectElementArray: PageObjectElement[]) {
+		for (let i: number = 0; i < pageObjectElementArray.length; i++) {
+			const rowId: number = (i + 1);
+			await this.verifyElementWithinTable(rowId, pageObjectElementArray[i]);
+		}
+	}
+
+	public async verifyElementWithinTable(rowId: number, expectedPageObjectElement: PageObjectElement) {
+		expect(await this.indexPage.getElementNameFromTableValue(rowId)).toBe(expectedPageObjectElement.elementName);
+		expect(await this.indexPage.getElementTypeFromTableValue(rowId)).toBe(expectedPageObjectElement.elementType);
+		expect(await this.indexPage.getElementIdFromTableValue(rowId)).toBe(expectedPageObjectElement.elementId ?? '');
+		expect(await this.indexPage.getIncludeGetFromTableValue(rowId)).toBe(expectedPageObjectElement.includeGet ?? false);
 	}
 
 	public async checkForErrors(expectedError: IndexPageError): Promise<void> {
