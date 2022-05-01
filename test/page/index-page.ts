@@ -3,6 +3,13 @@ import { PageBase } from './page-base';
 import { SelectListAttribute } from '../enum/select-list-attribute';
 
 export class IndexPage extends PageBase {
+	private static elementNameTableCellId: number = 1;
+	private static elementTypeTableCellId: number = 2;
+	private static elementIdTableCellId: number = 3;
+	private static includeGetTableCellId: number = 4;
+	private static editTableCellId: number = 5;
+	private static removeTableCellId: number = 6;
+
 	private get settings_Link(): Locator { return this.page.locator('.header__link'); }
 	private get templateList_SelectList(): Locator { return this.page.locator('#template-list'); }
 	private get pageObjectName_Textbox(): Locator { return this.page.locator('#pageobject-name'); }
@@ -54,6 +61,14 @@ export class IndexPage extends PageBase {
 		await this.generatePageObject_Button.click();
 	}
 
+	public async clickEditElementFromTableButton(rowId: number): Promise<void> {
+		await this.clickElementTableButton(rowId, IndexPage.editTableCellId);
+	}
+
+	public async clickRemoveElementFromTableButton(rowId: number): Promise<void> {
+		await this.clickElementTableButton(rowId, IndexPage.removeTableCellId);
+	}
+
 	public async isSettingsLinkDisplayed(): Promise<boolean> {
 		return await this.settings_Link.isVisible();
 	}
@@ -82,11 +97,39 @@ export class IndexPage extends PageBase {
 		return await this.includeGet_Checkbox.isChecked();
 	}
 
+	public async getAddElementToTableButtonValue(): Promise<string> {
+		return await this.addElementToTable_Button.textContent();
+	}
+
 	public async getElementTableRowCount(): Promise<number> {
 		return await this.element_Table.locator('tr').count();
 	}
 
 	public async waitForElementTableToPopulate(expectedRowNumber: number): Promise<void> {
 		await this.element_Table.locator(`tr:nth-of-type(${expectedRowNumber})`).waitFor();
+	}
+
+	public async getElementNameFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTableValue(rowId, IndexPage.elementNameTableCellId);
+	}
+
+	public async getElementTypeFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTableValue(rowId, IndexPage.elementTypeTableCellId);
+	}
+
+	public async getElementIdFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTableValue(rowId, IndexPage.elementIdTableCellId);
+	}
+
+	public async getIncludeGetFromTableValue(rowId: number): Promise<boolean> {
+		return await this.getElementTableValue(rowId, IndexPage.includeGetTableCellId) == 'true';
+	}
+
+	private async clickElementTableButton(rowId: number, cellId: number): Promise<void> {
+		await this.page.locator(`((//tbody[@id='element-table']/tr)[${rowId}]/td)[${cellId}]/button`).click();
+	}
+
+	private async getElementTableValue(rowId: number, cellId: number): Promise<string> {
+		return await this.page.locator(`((//tbody[@id='element-table']/tr)[${rowId}]/td)[${cellId}]`).textContent();
 	}
 }

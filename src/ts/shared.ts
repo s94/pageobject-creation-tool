@@ -3,8 +3,6 @@ const path: any = require('path');
 const templateFile: string = 'template.json';
 const rawData: any = fs.readFileSync(path.resolve(__dirname, templateFile));
 
-const removeButtonHTML: string = '<button class=\'table__button--remove\' onclick=\'deleteRowFromTable(this);\'>Remove</button>';
-
 const headerElement: Element = document.getElementsByClassName('header')[0];
 const errorElement: Element = document.getElementsByClassName('error')[0];
 const templateListElement: HTMLSelectElement = document.getElementById('template-list') as HTMLSelectElement;
@@ -27,14 +25,6 @@ function populateTemplateList(): void {
 		optionElement.innerHTML = settingsFileContent[i].TemplateName;
 		templateListElement?.appendChild(optionElement);
 	}
-}
-
-function deleteRowFromTable(buttonElement: HTMLButtonElement): void {
-	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
-	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
-	const tableElement: HTMLTableElement = tableRowElement.parentNode as HTMLTableElement;
-	const index: number = tableRowElement.rowIndex - 1;
-	tableElement.deleteRow(index);
 }
 
 function showError(errorMessage: string): void {

@@ -60,7 +60,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no templat
 	
 	test('PageObject Name: blank, Element Table: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
-			elementType: TestData.ExampleTemplate.ElementType,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox,
 			elementName: TestData.Populated
 		};
 		const pageObject: PageObject = {
@@ -77,7 +77,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no templat
 
 	test('PageObject Name: whitespace, Element Table: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
-			elementType: TestData.ExampleTemplate.ElementType,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox,
 			elementName: TestData.Populated
 		};
 		const pageObject: PageObject = { templateName: TestData.ExampleTemplate.Name,
@@ -93,7 +93,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no templat
 	
 	test('PageObject Name: populated, Element Table: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
-			elementType: TestData.ExampleTemplate.ElementType,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox,
 			elementName: TestData.Populated
 		};
 		const pageObject: PageObject = {
@@ -126,7 +126,7 @@ test.describe('correct error is shown when clicking \'Generate\' with no PageObj
 
 	test('Template Name: populated, Element Table: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
-			elementType: TestData.ExampleTemplate.ElementType,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox,
 			elementName: TestData.Populated
 		};
 		const pageObject: PageObject = {
@@ -155,7 +155,7 @@ test.describe('correct error is shown when clicking \'Generate\' with the elemen
 test.describe('no error is shown when clicking \'Generate\' when a template selected, PageObject Name and element table is populated', async () => {
 	test('Template Name: populated, PageObject Name: populated, Element Table: populated', async () => {
 		const pageObjectElement: PageObjectElement = {
-			elementType: TestData.ExampleTemplate.ElementType,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox,
 			elementName: TestData.Populated
 		};
 		const pageObject: PageObject = {

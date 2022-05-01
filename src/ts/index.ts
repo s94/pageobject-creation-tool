@@ -4,9 +4,12 @@ const elementNameElement: HTMLInputElement = document.getElementById('element-na
 const elementTypeElement: HTMLSelectElement = document.getElementById('element-type') as HTMLSelectElement;
 const elementIdElement: HTMLInputElement = document.getElementById('element-id') as HTMLInputElement;
 const includeGetElement: HTMLInputElement = document.getElementById('include-get') as HTMLInputElement;
+const addButton: HTMLButtonElement = document.getElementById('add-button') as HTMLButtonElement;
 const elementTableElement: HTMLTableElement = document.getElementById('element-table') as HTMLTableElement;
 const outputElement: HTMLTextAreaElement = document.getElementById('output') as HTMLTextAreaElement;
 const modalElement: HTMLDivElement = document.getElementById('output-modal') as HTMLDivElement;
+
+let editElementTableRowIndex: number | undefined = undefined;
 
 function populateElementTypeList(): void {
 	const templateName: string | null = templateListElement.selectedOptions[0].textContent;
@@ -66,27 +69,87 @@ function addElementToTable(): void {
 		isValid = false;
 	}
 
-	if (elementTableElement && isValid) {
+	if (elementTableElement && isValid && editElementTableRowIndex === undefined) {
+		const editButtonHTML: string = '<button class=\'table__button--edit\' onclick=\'editElementFromTable(this);\'>Edit</button>';
+		const removeButtonHTML: string = '<button class=\'table__button--remove\' onclick=\'deleteElementFromTable(this);\'>Remove</button>';
+
 		const row: HTMLTableRowElement = elementTableElement.insertRow(-1);
 		const elementNameCell: HTMLTableCellElement = row.insertCell(0);
 		const elementTypeCell: HTMLTableCellElement = row.insertCell(1);
 		const elementIdCell: HTMLTableCellElement = row.insertCell(2);
 		const getCell: HTMLTableCellElement = row.insertCell(3);
-		const removeCell: HTMLTableCellElement = row.insertCell(4);
+		const editCell: HTMLTableCellElement = row.insertCell(4);
+		const removeCell: HTMLTableCellElement = row.insertCell(5);
 
 		elementNameCell.textContent = elementNameElement.value;
 		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
 		elementIdCell.textContent = elementIdElement.value;
 		getCell.textContent = includeGetElement.checked ? "true" : "false";
+		editCell.innerHTML = editButtonHTML;
 		removeCell.innerHTML = removeButtonHTML;
 
-		elementNameElement.value = '';
-		elementTypeElement.selectedIndex = 0;
-		elementIdElement.value = '';
-		includeGetElement.checked = false;
+		resetAddElementForm();
+	}
+	else if (elementTableElement && isValid && editElementTableRowIndex !== undefined) {
+		const row: HTMLTableRowElement = elementTableElement.rows[editElementTableRowIndex];
+		const elementNameCell: HTMLTableCellElement = row.cells[0];
+		const elementTypeCell: HTMLTableCellElement = row.cells[1];
+		const elementIdCell: HTMLTableCellElement = row.cells[2];
+		const getCell: HTMLTableCellElement = row.cells[3];
+
+		elementNameCell.textContent = elementNameElement.value;
+		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
+		elementIdCell.textContent = elementIdElement.value;
+		getCell.textContent = includeGetElement.checked ? "true" : "false";
+
+		resetAddElementForm();
 	}
 	else {
 		showError('Element cannot be added to the table, submission is not valid.');
+	}
+}
+
+function resetAddElementForm(): void {
+	elementNameElement.value = '';
+	elementTypeElement.selectedIndex = 0;
+	elementIdElement.value = '';
+	includeGetElement.checked = false;
+	addButton.textContent = 'Add';
+	editElementTableRowIndex = undefined;
+}
+
+function editElementFromTable(buttonElement: HTMLButtonElement): void {
+	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
+	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
+
+	const elementNameCellContent: string = tableRowElement.cells[0].textContent ?? '';
+	const elementTypeCellContent: string = tableRowElement.cells[1].textContent ?? '';
+	const elementIdCellContent: string = tableRowElement.cells[2].textContent ?? '';
+	const includeGetCellContent: boolean = tableRowElement.cells[3].textContent == 'true';
+
+	for (let i: number = 0; i < elementTypeElement.options.length; i++) {
+		if (elementTypeElement.options[i].textContent == elementTypeCellContent) {
+			elementTypeElement.value = (i - 1).toString();
+			break;
+		}
+	}
+	elementNameElement.value = elementNameCellContent;
+	elementIdElement.value = elementIdCellContent;
+	includeGetElement.checked = includeGetCellContent;
+
+	editElementTableRowIndex = tableRowElement.rowIndex - 1;
+	addButton.textContent = 'Update';
+}
+
+function deleteElementFromTable(buttonElement: HTMLButtonElement): void {
+	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
+	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
+	const tableElement: HTMLTableElement = tableRowElement.parentNode as HTMLTableElement;
+	const index: number = tableRowElement.rowIndex - 1;
+	tableElement.deleteRow(index);
+
+	if (editElementTableRowIndex !== undefined) {
+		resetAddElementForm();
 	}
 }
 
