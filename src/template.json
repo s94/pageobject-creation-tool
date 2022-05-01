@@ -7,6 +7,10 @@
 				"Textbox",
 				"Enter${ElementName}${ElementName}",
 				"Get${ElementName}"
+			],
+			[
+				"Button",
+				"Click${ElementName}${ElementName}"
 			]
 		],
 		"PageObjectStructure": "${PageObjectName}${Elements}${GeneralMethods}${GetMethods}"

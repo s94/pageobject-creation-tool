@@ -122,7 +122,7 @@ function editElementFromTable(buttonElement: HTMLButtonElement): void {
 	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
 	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
 
-	const elementNameCellContent: string = tableRowElement.cells[0].textContent ?? ''
+	const elementNameCellContent: string = tableRowElement.cells[0].textContent ?? '';
 	const elementTypeCellContent: string = tableRowElement.cells[1].textContent ?? '';
 	const elementIdCellContent: string = tableRowElement.cells[2].textContent ?? '';
 	const includeGetCellContent: boolean = tableRowElement.cells[3].textContent == 'true';
