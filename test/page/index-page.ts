@@ -17,7 +17,7 @@ export class IndexPage extends PageBase {
 	private get elementName_Textbox(): Locator { return this.page.locator('#element-name'); }
 	private get elementId_Textbox(): Locator { return this.page.locator('#element-id'); }
 	private get includeGet_Checkbox(): Locator { return this.page.locator('#include-get'); }
-	private get addElementToTable_Button(): Locator { return this.page.locator('#add-button'); }
+	private get addElementToTable_Button(): Locator { return this.page.locator('#add-element-button'); }
 	private get element_Table(): Locator { return this.page.locator('#element-table'); }
 	private get generatePageObject_Button(): Locator { return this.page.locator('#generate-pageobject'); }
 

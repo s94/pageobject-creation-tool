@@ -3,6 +3,12 @@ import { PageBase } from './page-base';
 import { SelectListAttribute } from '../enum/select-list-attribute';
 
 export class SettingsPage extends PageBase {
+	private static elementTypeTableCellId: number = 1;
+	private static generalMethodTemplateCellId: number = 2;
+	private static getMethodTemplateCellId: number = 3;
+	private static editTableCellId: number = 4;
+	private static removeTableCellId: number = 5;
+
 	private get home_Link(): Locator { return this.page.locator('.header__link'); }
 	private get templateList_SelectList(): Locator { return this.page.locator('#template-list'); }
 	private get editTemplate_Button(): Locator { return this.page.locator('#edit-template'); }
@@ -13,7 +19,7 @@ export class SettingsPage extends PageBase {
 	private get elementType_Textbox(): Locator { return this.page.locator('#element-type'); }
 	private get generalMethodTemplate_Textbox(): Locator { return this.page.locator('#general-method-template'); }
 	private get getMethodTemplate_Textbox(): Locator { return this.page.locator('#get-method-template'); }
-	private get addElementTypeToTable_Button(): Locator { return this.page.locator('#add-button'); }
+	private get addElementTypeToTable_Button(): Locator { return this.page.locator('#add-element-type-button'); }
 	private get elementType_Table(): Locator { return this.page.locator('#element-type-table'); }
 	private get saveTemplate_Button(): Locator { return this.page.locator('#save-template'); }
 
@@ -69,6 +75,14 @@ export class SettingsPage extends PageBase {
 		await this.saveTemplate_Button.click();
 	}
 
+	public async clickEditElementTypeFromTableButton(rowId: number): Promise<void> {
+		await this.clickElementTypeTableButton(rowId, SettingsPage.editTableCellId);
+	}
+
+	public async clickRemoveElementTypeFromTableButton(rowId: number): Promise<void> {
+		await this.clickElementTypeTableButton(rowId, SettingsPage.removeTableCellId);
+	}
+
 	public async isHomeLinkDisplayed(): Promise<boolean> {
 		return await this.home_Link.isVisible();
 	}
@@ -101,11 +115,35 @@ export class SettingsPage extends PageBase {
 		return await this.getMethodTemplate_Textbox.inputValue();
 	}
 
+	public async getAddElementTypeToTableButtonValue(): Promise<string> {
+		return await this.addElementTypeToTable_Button.textContent();
+	}
+
 	public async getElementTypeTableRowCount(): Promise<number> {
 		return await this.elementType_Table.locator('tr').count();
 	}
 
 	public async waitForElementTypeTableToPopulate(expectedRowNumber: number): Promise<void> {
 		await this.elementType_Table.locator(`tr:nth-of-type(${expectedRowNumber})`).waitFor();
+	}
+
+	public async getElementTypeFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTypeTableValue(rowId, SettingsPage.elementTypeTableCellId);
+	}
+
+	public async getGeneralMethodTemplateFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTypeTableValue(rowId, SettingsPage.generalMethodTemplateCellId);
+	}
+
+	public async getGetMethodTemplateFromTableValue(rowId: number): Promise<string> {
+		return await this.getElementTypeTableValue(rowId, SettingsPage.getMethodTemplateCellId);
+	}
+
+	private async clickElementTypeTableButton(rowId: number, cellId: number): Promise<void> {
+		await this.page.locator(`((//tbody[@id='element-type-table']/tr)[${rowId}]/td)[${cellId}]/button`).click();
+	}
+
+	private async getElementTypeTableValue(rowId: number, cellId: number): Promise<string> {
+		return await this.page.locator(`((//tbody[@id='element-type-table']/tr)[${rowId}]/td)[${cellId}]`).textContent();
 	}
 }

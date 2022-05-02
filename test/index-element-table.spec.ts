@@ -16,7 +16,7 @@ test.beforeEach(async () => {
 
 	indexPage = new IndexPage(await electronApp.firstWindow());
 	indexService = new IndexService(indexPage);
-	await indexService.checkForErrors(IndexPageError.Blank)
+	await indexService.checkForErrors(IndexPageError.Blank);
 	await indexPage.selectTemplate(TestData.ExampleTemplate.Name, SelectListAttribute.Label);
 	expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('1');
 });

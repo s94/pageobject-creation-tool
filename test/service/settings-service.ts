@@ -18,7 +18,7 @@ export class SettingsService {
 		expect(await this.settingsPage.getElementTemplateValue()).toBe(pageObjectTemplate.elementTemplate);
 		await this.settingsPage.enterPageObjectStructure(pageObjectTemplate.pageObjectStructure);
 		expect(await this.settingsPage.getPageObjectStructureValue()).toBe(pageObjectTemplate.pageObjectStructure);
-		await this.addElementsToTable(pageObjectTemplate.elementTypes);
+		await this.addElementTypesToTable(pageObjectTemplate.elementTypes);
 		await this.settingsPage.clickSaveTemplateButton();
 	}
 
@@ -31,7 +31,7 @@ export class SettingsService {
 		expect(await this.settingsPage.getElementTemplateValue()).toBe(pageObjectTemplate.elementTemplate);
 		await this.settingsPage.enterPageObjectStructure(pageObjectTemplate.pageObjectStructure);
 		expect(await this.settingsPage.getPageObjectStructureValue()).toBe(pageObjectTemplate.pageObjectStructure);
-		await this.addElementsToTable(pageObjectTemplate.elementTypes, existingElementsCount);
+		await this.addElementTypesToTable(pageObjectTemplate.elementTypes, existingElementsCount);
 		await this.settingsPage.clickSaveTemplateButton();
 	}
 
@@ -41,7 +41,7 @@ export class SettingsService {
 		await this.settingsPage.clickDeleteTemplateButton();
 	}
 
-	public async addElementsToTable(elementTypeArray: ElementType[], existingElementsCount: number = 0): Promise<void> {
+	public async addElementTypesToTable(elementTypeArray: ElementType[], existingElementsCount: number = 0): Promise<void> {
 		let tableRowNumber: number = existingElementsCount;
 		for (let i: number = 0; i < elementTypeArray.length; i++) {
 			const elementType: ElementType = elementTypeArray[i];
@@ -62,6 +62,38 @@ export class SettingsService {
 			
 			expect(await this.settingsPage.getElementTypeTableRowCount()).toBe(tableRowNumber);
 		}
+	}
+
+	public async editElementTypeFromTable(rowId: number, elementTypeToEdit: ElementType, editedElementType: ElementType): Promise<void> {
+		await this.settingsPage.clickEditElementTypeFromTableButton(rowId);
+		expect(await this.settingsPage.getAddElementTypeToTableButtonValue()).toBe('Update');
+		await this.verifyElementTypeWithinForm(elementTypeToEdit);
+
+		await this.settingsPage.enterElementType(editedElementType.elementTypeName);
+		await this.settingsPage.enterGeneralMethodTemplate(editedElementType.generalMethodTemplate);
+		await this.settingsPage.enterGetMethodTemplate(editedElementType.getMethodTemplate);
+		await this.settingsPage.clickAddElementTypeToTableButton();
+
+		expect(await this.settingsPage.getAddElementTypeToTableButtonValue()).toBe('Add');
+	}
+
+	public async verifyElementTypeWithinForm(expectedElementType: ElementType) {
+		expect(await this.settingsPage.getElementTypeValue()).toBe(expectedElementType.elementTypeName);
+		expect(await this.settingsPage.getGeneralMethodTemplateValue()).toBe(expectedElementType.generalMethodTemplate);
+		expect(await this.settingsPage.getGeneralMethodTemplateValue()).toBe(expectedElementType.generalMethodTemplate ?? '');
+	}
+
+	public async verifyElementTypesWithinTable(elementTypeArray: ElementType[]) {
+		for (let i: number = 0; i < elementTypeArray.length; i++) {
+			const rowId: number = (i + 1);
+			await this.verifyElementTypeWithinTable(rowId, elementTypeArray[i]);
+		}
+	}
+
+	public async verifyElementTypeWithinTable(rowId: number, expectedElementType: ElementType) {
+		expect(await this.settingsPage.getElementTypeFromTableValue(rowId)).toBe(expectedElementType.elementTypeName);
+		expect(await this.settingsPage.getGeneralMethodTemplateFromTableValue(rowId)).toBe(expectedElementType.generalMethodTemplate);
+		expect(await this.settingsPage.getGetMethodTemplateFromTableValue(rowId)).toBe(expectedElementType.getMethodTemplate ?? '');
 	}
 
 	public async checkForErrors(expectedError: SettingsPageError): Promise<void> {
