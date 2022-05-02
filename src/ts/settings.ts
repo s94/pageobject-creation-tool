@@ -1,10 +1,14 @@
 // Elements
 const templateNameElement: HTMLInputElement = document.getElementById('template-name') as HTMLInputElement;
 const elementTemplateElement: HTMLTextAreaElement = document.getElementById('element-declaration-template') as HTMLTextAreaElement;
+const templateElementTypeElement: HTMLInputElement = document.getElementById('element-type') as HTMLInputElement;
 const pageObjectStructureElement: HTMLTextAreaElement = document.getElementById('pageobject-structure') as HTMLTextAreaElement;
 const generalMethodTemplateElement: HTMLTextAreaElement = document.getElementById('general-method-template') as HTMLTextAreaElement;
 const getMethodTemplateElement: HTMLTextAreaElement = document.getElementById('get-method-template') as HTMLTextAreaElement;
+const addElementTypeButton: HTMLButtonElement = document.getElementById('add-element-type-button') as HTMLButtonElement;
 const elementTypeTableElement: HTMLTableElement = document.getElementById('element-type-table') as HTMLTableElement;
+
+let editElementTypeTableRowIndex: number | undefined = undefined;
 
 function loadTemplate(): void {
 	const templateName: string | null = templateListElement?.selectedOptions[0].textContent;
@@ -33,20 +37,28 @@ function loadTemplate(): void {
 }
 
 function addElementTypeToTable(): void {
-	const elementTypeElement: HTMLInputElement = document.getElementById('element-type') as HTMLInputElement;
 	let isValid = true;
-	if (elementTypeElement.value === null || elementTypeElement.value.trim().length <= 0) {
+	if (templateElementTypeElement.value === null || templateElementTypeElement.value.trim().length <= 0) {
 		isValid = false;
 	}
 	if (generalMethodTemplateElement.value === null || generalMethodTemplateElement.value.trim().length <= 0) {
 		isValid = false;
 	}
 
-	if (elementTypeTableElement && isValid) {
-		addToTable(elementTypeElement.value, generalMethodTemplateElement.value, getMethodTemplateElement.value);
-		elementTypeElement.value = '';
-		generalMethodTemplateElement.value = '';
-		getMethodTemplateElement.value = '';
+	if (elementTypeTableElement && isValid && editElementTypeTableRowIndex === undefined) {
+		addToTable(templateElementTypeElement.value, generalMethodTemplateElement.value, getMethodTemplateElement.value);
+		resetAddElementTypeForm();
+	}
+	else if (elementTypeTableElement && isValid && editElementTypeTableRowIndex !== undefined) {
+		const row: HTMLTableRowElement = elementTypeTableElement.rows[editElementTypeTableRowIndex];
+		const elementTypeCell: HTMLTableCellElement = row.cells[0];
+		const generalMethodTemplateCell: HTMLTableCellElement = row.cells[1];
+		const getMethodTemplateCell: HTMLTableCellElement = row.cells[2];
+
+		elementTypeCell.textContent = templateElementTypeElement.value;
+		generalMethodTemplateCell.textContent = generalMethodTemplateElement.value;
+		getMethodTemplateCell.textContent = getMethodTemplateElement.value;
+		resetAddElementTypeForm();
 	}
 	else {
 		showError('Element cannot be added to the table, submission is not valid.');
@@ -54,18 +66,37 @@ function addElementTypeToTable(): void {
 }
 
 function addToTable(elementType: string, generalMethodTemplate: string, getMethodTemplate: string): void {
+	const editButtonHTML: string = '<button class=\'table__button--edit\' onclick=\'editFromTable(this);\'>Edit</button>';
 	const removeButtonHTML: string = '<button class=\'table__button--remove\' onclick=\'deleteFromTable(this);\'>Remove</button>';
 
 	const row: HTMLTableRowElement = elementTypeTableElement.insertRow(-1);
 	const elementTypeCell: HTMLTableCellElement = row.insertCell(0);
 	const generalMethodTemplateCell: HTMLTableCellElement = row.insertCell(1);
 	const getMethodTemplateCell: HTMLTableCellElement = row.insertCell(2);
-	const removeCell: HTMLTableCellElement = row.insertCell(3);
+	const editCell: HTMLTableCellElement = row.insertCell(3);
+	const removeCell: HTMLTableCellElement = row.insertCell(4);
 
 	elementTypeCell.textContent = elementType;
 	generalMethodTemplateCell.textContent = generalMethodTemplate;
 	getMethodTemplateCell.textContent = getMethodTemplate;
+	editCell.innerHTML = editButtonHTML;
 	removeCell.innerHTML = removeButtonHTML;
+}
+
+function editFromTable(buttonElement: HTMLButtonElement): void {
+	const tableCellElement: HTMLTableCellElement = buttonElement.parentNode as HTMLTableCellElement;
+	const tableRowElement: HTMLTableRowElement = tableCellElement.parentNode as HTMLTableRowElement;
+
+	const elementTypeCellContent: string = tableRowElement.cells[0].textContent ?? '';
+	const generalMethodTemplateCellContent: string = tableRowElement.cells[1].textContent ?? '';
+	const getMethodTemplateCellContent: string = tableRowElement.cells[2].textContent ?? '';
+
+	templateElementTypeElement.value = elementTypeCellContent;
+	generalMethodTemplateElement.value = generalMethodTemplateCellContent;
+	getMethodTemplateElement.value = getMethodTemplateCellContent;
+
+	editElementTypeTableRowIndex = tableRowElement.rowIndex - 1;
+	addElementTypeButton.textContent = 'Update';
 }
 
 function deleteFromTable(buttonElement: HTMLButtonElement): void {
@@ -74,6 +105,18 @@ function deleteFromTable(buttonElement: HTMLButtonElement): void {
 	const tableElement: HTMLTableElement = tableRowElement.parentNode as HTMLTableElement;
 	const index: number = tableRowElement.rowIndex - 1;
 	tableElement.deleteRow(index);
+
+	if (editElementTypeTableRowIndex !== undefined) {
+		resetAddElementTypeForm();
+	}
+}
+
+function resetAddElementTypeForm(): void {
+	templateElementTypeElement.value = '';
+	generalMethodTemplateElement.value = '';
+	getMethodTemplateElement.value = '';
+	addElementTypeButton.textContent = 'Add';
+	editElementTypeTableRowIndex = undefined;
 }
 
 function saveTemplate(): void {
@@ -155,12 +198,9 @@ function clearTemplateForm(): void {
 	templateNameElement.value = '';
 	elementTemplateElement.value = '';
 	pageObjectStructureElement.value = '';
-	generalMethodTemplateElement.value = '';
-	getMethodTemplateElement.value = '';
-	const templateTableRows: HTMLCollectionOf<HTMLTableRowElement> = elementTypeTableElement?.rows;
-
-	for (let i: number = 0; i < templateTableRows.length; i++) {
-		templateTableRows[i].remove();
+	resetAddElementTypeForm();
+	while (elementTypeTableElement.hasChildNodes() && elementTypeTableElement.lastChild) {
+		elementTypeTableElement.removeChild(elementTypeTableElement.lastChild);
 	}
 }
 

@@ -4,7 +4,7 @@ const elementNameElement: HTMLInputElement = document.getElementById('element-na
 const elementTypeElement: HTMLSelectElement = document.getElementById('element-type') as HTMLSelectElement;
 const elementIdElement: HTMLInputElement = document.getElementById('element-id') as HTMLInputElement;
 const includeGetElement: HTMLInputElement = document.getElementById('include-get') as HTMLInputElement;
-const addButton: HTMLButtonElement = document.getElementById('add-button') as HTMLButtonElement;
+const addElementButton: HTMLButtonElement = document.getElementById('add-element-button') as HTMLButtonElement;
 const elementTableElement: HTMLTableElement = document.getElementById('element-table') as HTMLTableElement;
 const outputElement: HTMLTextAreaElement = document.getElementById('output') as HTMLTextAreaElement;
 const modalElement: HTMLDivElement = document.getElementById('output-modal') as HTMLDivElement;
@@ -114,7 +114,7 @@ function resetAddElementForm(): void {
 	elementTypeElement.selectedIndex = 0;
 	elementIdElement.value = '';
 	includeGetElement.checked = false;
-	addButton.textContent = 'Add';
+	addElementButton.textContent = 'Add';
 	editElementTableRowIndex = undefined;
 }
 
@@ -138,7 +138,7 @@ function editElementFromTable(buttonElement: HTMLButtonElement): void {
 	includeGetElement.checked = includeGetCellContent;
 
 	editElementTableRowIndex = tableRowElement.rowIndex - 1;
-	addButton.textContent = 'Update';
+	addElementButton.textContent = 'Update';
 }
 
 function deleteElementFromTable(buttonElement: HTMLButtonElement): void {

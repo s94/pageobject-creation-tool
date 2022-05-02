@@ -36,7 +36,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Blank
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: whitespace, General Method Template: blank', async () => {
@@ -45,7 +45,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Blank
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: whitespace, General Method Template: whitespace', async () => {
@@ -54,7 +54,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Whitespace
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: blank', async () => {
@@ -63,7 +63,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Blank
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: whitespace', async () => {
@@ -72,7 +72,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Whitespace
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: blank, General Method Template: populated', async () => {
@@ -81,7 +81,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Populated
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: whitespace, General Method Template: populated', async () => {
@@ -90,7 +90,7 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 			generalMethodTemplate: TestData.Populated
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 });
 
@@ -105,7 +105,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			generalMethodTemplate: TestData.Populated
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: populated, Get Method Template: blank', async () => {
@@ -115,7 +115,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			getMethodTemplate: TestData.Blank
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: populated, Get Method Template: whitespace', async () => {
@@ -125,7 +125,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			getMethodTemplate: TestData.Whitespace 
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: populated, Get Method Template: populated', async () => {
@@ -135,7 +135,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			getMethodTemplate: TestData.Populated
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: populated, Get Method Template: null', async () => {
@@ -145,7 +145,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			getMethodTemplate: null
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
 	test('Element Type: populated, General Method Template: populated, Get Method Template: undefined', async () => {
@@ -155,6 +155,6 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			getMethodTemplate: undefined
 		};
 
-		await settingsService.addElementsToTable([elementTypeModel]);
+		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 });
