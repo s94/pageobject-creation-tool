@@ -193,22 +193,63 @@ function generatePageObject(): void {
 	let getMethodsStringBuilder: string = '';
 
 	for (let i: number = 0; i < elementTableContent.length; i++) {
-		elementsStringBuilder += elementDeclaration.replace('${ElementName}', elementTableContent[i][0]).replace('${ElementType}', elementTableContent[i][1]).replace('${ElementId}', elementTableContent[i][2]);
+		const variableCheckModel: VariableCheckModel[] = [
+			{
+				searchValue: '${ElementName}',
+				camelCaseSearchValue: '${elementName}',
+				replaceValue: elementTableContent[i][0]
+			},
+			{
+				searchValue: '${ElementType}',
+				camelCaseSearchValue: '${elementType}',
+				replaceValue: elementTableContent[i][1]
+			},
+			{
+				searchValue: '${ElementId}',
+				camelCaseSearchValue: '${elementId}',
+				replaceValue: elementTableContent[i][2]
+			}
+		]
+
+		elementsStringBuilder += getValueForStringBuilder(elementDeclaration, variableCheckModel);
 
 		const generalMethodTemplate: string = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][1];
-		generalMethodsStringBuilder += generalMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]).replaceAll('${ElementType}', elementTableContent[i][1]);
+		generalMethodsStringBuilder += getValueForStringBuilder(generalMethodTemplate, variableCheckModel);
 
 		const getMethodTemplate: string = settingFromArray.ElementType.filter(x => x[0] === elementTableContent[i][1])[0][2];
 
 		if (elementTableContent[i][3] === 'true') {
-			getMethodsStringBuilder += getMethodTemplate.replaceAll('${ElementName}', elementTableContent[i][0]).replaceAll('${ElementType}', elementTableContent[i][1]);
+			getMethodsStringBuilder += getValueForStringBuilder(getMethodTemplate, variableCheckModel);
 		}
 	}
 
-	const output: string = pageObjectStructure.replaceAll('${PageObjectName}', pageObjectName).replace('${Elements}', elementsStringBuilder).replace('${GeneralMethods}', generalMethodsStringBuilder).replace('${GetMethods}', getMethodsStringBuilder);
+	const output: string = pageObjectStructure.replaceAll('${PageObjectName}', pageObjectName)
+											  .replace('${Elements}', elementsStringBuilder)
+											  .replace('${GeneralMethods}', generalMethodsStringBuilder)
+											  .replace('${GetMethods}', getMethodsStringBuilder);
+
 	outputElement.textContent = output.replaceAll('\\n', '\n').replaceAll('\\t', '\t');
 
 	modalElement.classList.remove('modal--hidden');
+
+	function getValueForStringBuilder(stringToCheck: string, variableCheckModel: VariableCheckModel[]): string {
+		let temp: string = stringToCheck;
+		for (let i: number = 0; i < variableCheckModel.length; i++) {
+			const variableToCheck: VariableCheckModel = variableCheckModel[i];
+			temp = checkForCamelCaseAndReplace(temp, variableToCheck.searchValue, variableToCheck.camelCaseSearchValue, variableToCheck.replaceValue);
+		}
+		return temp;
+	}
+
+	function checkForCamelCaseAndReplace(stringToCheck: string, searchValue: string, camelCaseSearchValue: string, replaceValue: string): string {
+		let retVal: string = stringToCheck.replaceAll(searchValue, replaceValue);
+
+		if (stringToCheck.includes(camelCaseSearchValue)) {
+			retVal = retVal.replaceAll(camelCaseSearchValue, `${replaceValue[0].toLocaleLowerCase()}${replaceValue.slice(1)}`);
+		}
+
+		return retVal;
+	}
 }
 
 function closeModal(): void {
@@ -223,4 +264,10 @@ function copyToClipboard(): void {
 	}, function() {
 		return false;
 	});
+}
+
+interface VariableCheckModel {
+	searchValue: string,
+	camelCaseSearchValue: string,
+	replaceValue: string
 }
