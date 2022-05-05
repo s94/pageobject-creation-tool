@@ -9,7 +9,7 @@
 }
 
 * {
-	font-family: 'Segoe UI', sans-serif !important;
+	font-family: 'Segoe UI', sans-serif;
 	color: var(--clr-baby-powder);
 	margin: 0;
 	box-sizing: border-box;

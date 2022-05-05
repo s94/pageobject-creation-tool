@@ -73,7 +73,8 @@
 	background-color: var(--clr-onyx);
 	border: 1px solid var(--clr-onyx);
 	border-radius: 4px;
-	font-family: consolas;
+	font-family: 'consolas', monospace;
+	font-size: 0.7rem;
 	height: -webkit-fill-available;
 	tab-size: 2rem;
 }
