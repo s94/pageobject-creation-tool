@@ -6,7 +6,7 @@ Written in TypeScript and built with Electron.
 
 ![pageobject-creation-tool screenshot](https://user-images.githubusercontent.com/11080821/166154345-a54519b0-6646-4e16-9f23-3598d1f38ae2.png)
 
-![pageobject-creation-tool screenshot 2](https://user-images.githubusercontent.com/11080821/167024069-c82f2031-9216-422f-aea8-fc05dd548aed.png)
+![pageobject-creation-tool screenshot 2](https://user-images.githubusercontent.com/11080821/167179052-c5f97892-ad02-4941-b815-82df6e69125c.png)
 
 ## Build the application
 
