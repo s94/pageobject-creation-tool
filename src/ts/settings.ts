@@ -125,11 +125,7 @@ function saveTemplate(): void {
 	const pageObjectStructure: string = pageObjectStructureElement?.value ?? '';
 	const checkArrayForExisting: PageObjectTemplate | undefined = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
 
-	if (elementTemplate.length <= 0) {
-		showError('Unable to save template, element declaration is required.');
-		return;
-	}
-	else if (pageObjectStructure.length <= 0) {
+	if (pageObjectStructure.length <= 0) {
 		showError('Unable to save template, PageObject structure is required.');
 		return;
 	}

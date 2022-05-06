@@ -25,183 +25,6 @@ test.afterEach(async () => {
 	await electronApp.close();
 });
 
-test.describe('correct error is shown when clicking \'Save\' with no element template entered', async () => {
-	test.afterEach(async () => {
-		await settingsService.checkForErrors(SettingsPageError.UnableToSave_ElementDeclarationRequired);
-	});
-
-	test('Template Name: blank, PageObject Structure: blank, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Blank,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: []
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-	
-	test('Template Name: blank, PageObject Structure: whitespace, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Blank,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: [] 
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: blank, PageObject Structure: blank, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Blank,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-	
-	test('Template Name: blank, PageObject Structure: whitespace, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Blank,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: whitespace, PageObject Structure: blank, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Whitespace,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: []
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: whitespace, PageObject Structure: blank, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Whitespace,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: whitespace, PageObject Structure: whitespace, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Whitespace,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: []
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-	
-	test('Template Name: whitespace, PageObject Structure: whitespace, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.Whitespace,
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: populated, PageObject Structure: blank, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: []
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: populated, PageObject Structure: blank, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Blank,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: populated, PageObject Structure: whitespace, Element Type Table: blank', async () => {
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: []
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-	
-	test('Template Name: populated, PageObject Structure: whitespace, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Whitespace,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-
-	test('Template Name: populated, PageObject Structure: populated, Element Type Table: populated', async () => {
-		const elementType: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Populated
-		};
-		const pageObjectTemplate: PageObjectTemplate = {
-			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Blank,
-			pageObjectStructure: TestData.Populated,
-			elementTypes: [elementType]
-		};
-
-		await settingsService.createTemplate(pageObjectTemplate);
-	});
-});
-
 test.describe('correct error is shown when clicking \'Save\' with no PageObject Structure entered', async () => {
 	test.afterEach(async () => {
 		await settingsService.checkForErrors(SettingsPageError.UnableToSave_PageObjectStructureRequired);
@@ -361,20 +184,54 @@ test.describe('correct error is shown when clicking \'Save\' with no Template Na
 	});
 });
 
-test.describe('no error is shown when clicking \'Save\' with element declaration, PageObject Structure, element type table and Template Name populated', async () => {
-	test('Template Name: blank', async () => {
+test.describe('no error is shown when clicking \'Save\' with PageObject Structure, element type table and Template Name populated', async () => {
+	test.afterEach(async () => {
+		await settingsService.checkForErrors(SettingsPageError.Blank);
+	});
+
+	test('Element Declaration: blank', async () => {
 		const elementType: ElementType = {
 			elementTypeName: TestData.Populated,
 			generalMethodTemplate: TestData.Populated
 		};
 		const pageObjectTemplate: PageObjectTemplate = {
 			templateName: TestData.uniqueTestTemplateName(),
-			elementTemplate: TestData.Populated,
+			elementTemplate: TestData.Blank,
 			pageObjectStructure: TestData.Populated,
 			elementTypes: [elementType]
 		};
 		
 		await settingsService.createTemplate(pageObjectTemplate);
-		await settingsService.checkForErrors(SettingsPageError.Blank);
 	});
+
+	test('Element Declaration: whitespace', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Whitespace,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: [elementType]
+		};
+		
+		await settingsService.createTemplate(pageObjectTemplate);
+	});
+});
+
+test('no error is shown when clicking \'Save\' with element declaration, PageObject Structure, element type table and Template Name populated', async () => {
+	const elementType: ElementType = {
+		elementTypeName: TestData.Populated,
+		generalMethodTemplate: TestData.Populated
+	};
+	const pageObjectTemplate: PageObjectTemplate = {
+		templateName: TestData.uniqueTestTemplateName(),
+		elementTemplate: TestData.Populated,
+		pageObjectStructure: TestData.Populated,
+		elementTypes: [elementType]
+	};
+
+	await settingsService.createTemplate(pageObjectTemplate);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });
