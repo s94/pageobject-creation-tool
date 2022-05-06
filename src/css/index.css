@@ -69,14 +69,11 @@
 	display: none;
 }
 
-.modal__textarea {
-	background-color: var(--clr-onyx);
-	border: 1px solid var(--clr-onyx);
-	border-radius: 4px;
-	font-family: 'consolas', monospace;
-	font-size: 0.7rem;
+.modal__code {
+	background-color: var(--clr-onyx) !important;
+	font-size: 0.7rem !important;
+	border-radius: 4px !important;
 	height: -webkit-fill-available;
-	tab-size: 2rem;
 }
 
 @media (min-width: 72rem) {

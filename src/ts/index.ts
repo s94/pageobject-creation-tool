@@ -6,8 +6,9 @@ const elementIdElement: HTMLInputElement = document.getElementById('element-id')
 const includeGetElement: HTMLInputElement = document.getElementById('include-get') as HTMLInputElement;
 const addElementButton: HTMLButtonElement = document.getElementById('add-element-button') as HTMLButtonElement;
 const elementTableElement: HTMLTableElement = document.getElementById('element-table') as HTMLTableElement;
-const outputElement: HTMLTextAreaElement = document.getElementById('output') as HTMLTextAreaElement;
+const outputElement: HTMLElement = document.getElementById('output') as HTMLElement;
 const modalElement: HTMLDivElement = document.getElementById('output-modal') as HTMLDivElement;
+const syntaxHighlightingElement: HTMLSelectElement = document.getElementById('syntax-list') as HTMLSelectElement;
 
 let editElementTableRowIndex: number | undefined = undefined;
 
@@ -252,12 +253,29 @@ function generatePageObject(): void {
 	}
 }
 
+let previouslySelectedSyntax: string | undefined = undefined;
+
+function updateSyntaxHighlighting(): void {
+	const getSelectedSyntax: string = syntaxHighlightingElement.selectedOptions[0].value;
+
+	if (previouslySelectedSyntax !== undefined) {
+		outputElement.parentElement?.classList.remove(`language-${previouslySelectedSyntax}`);
+		outputElement.classList.remove(`language-${previouslySelectedSyntax}`);
+	}
+	outputElement.parentElement?.classList.add(`language-${getSelectedSyntax}`);
+	outputElement.classList.add(`language-${getSelectedSyntax}`);
+
+	// @ts-ignore
+	Prism.highlightAll();
+	previouslySelectedSyntax = getSelectedSyntax;
+}
+
 function closeModal(): void {
 	modalElement.classList.add('modal--hidden');
 }
 
 function copyToClipboard(): void {
-	const textToCopy: string = outputElement.value;
+	const textToCopy: string = outputElement.textContent ?? '';
 
 	navigator.clipboard.writeText(textToCopy).then(function() {
 		return true;
