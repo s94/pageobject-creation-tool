@@ -1,7 +1,7 @@
 [
 	{
 		"TemplateName": "Example Template",
-		"ElementDeclaration": "${ElementName}${ElementType}${ElementId}",
+		"ElementDeclaration": "${ElementName}${ElementType}${ElementLocator}",
 		"ElementType": [
 			[
 				"Textbox",

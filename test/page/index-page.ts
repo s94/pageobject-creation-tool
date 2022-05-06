@@ -5,7 +5,7 @@ import { SelectListAttribute } from '../enum/select-list-attribute';
 export class IndexPage extends PageBase {
 	private static elementNameTableCellId: number = 1;
 	private static elementTypeTableCellId: number = 2;
-	private static elementIdTableCellId: number = 3;
+	private static elementLocatorTableCellId: number = 3;
 	private static includeGetTableCellId: number = 4;
 	private static editTableCellId: number = 5;
 	private static removeTableCellId: number = 6;
@@ -15,7 +15,7 @@ export class IndexPage extends PageBase {
 	private get pageObjectName_Textbox(): Locator { return this.page.locator('#pageobject-name'); }
 	private get elementType_SelectList(): Locator { return this.page.locator('#element-type'); }
 	private get elementName_Textbox(): Locator { return this.page.locator('#element-name'); }
-	private get elementId_Textbox(): Locator { return this.page.locator('#element-id'); }
+	private get elementLocator_Textbox(): Locator { return this.page.locator('#element-locator'); }
 	private get includeGet_Checkbox(): Locator { return this.page.locator('#include-get'); }
 	private get addElementToTable_Button(): Locator { return this.page.locator('#add-element-button'); }
 	private get element_Table(): Locator { return this.page.locator('#element-table'); }
@@ -46,7 +46,7 @@ export class IndexPage extends PageBase {
 	}
 
 	public async enterElementId(elementId: string): Promise<void> {
-		await this.elementId_Textbox.fill(elementId);
+		await this.elementLocator_Textbox.fill(elementId);
 	}
 
 	public async toggleIncludeGetCheckbox(toggleCheckbox: boolean): Promise<void> {
@@ -90,7 +90,7 @@ export class IndexPage extends PageBase {
 	}
 
 	public async getElementIdValue(): Promise<string> {
-		return await this.elementId_Textbox.inputValue();
+		return await this.elementLocator_Textbox.inputValue();
 	}
 
 	public async isIncludeGetChecked(): Promise<boolean> {
@@ -118,7 +118,7 @@ export class IndexPage extends PageBase {
 	}
 
 	public async getElementIdFromTableValue(rowId: number): Promise<string> {
-		return await this.getElementTableValue(rowId, IndexPage.elementIdTableCellId);
+		return await this.getElementTableValue(rowId, IndexPage.elementLocatorTableCellId);
 	}
 
 	public async getIncludeGetFromTableValue(rowId: number): Promise<boolean> {

@@ -2,7 +2,7 @@
 const pageObjectNameElement: HTMLInputElement = document.getElementById('pageobject-name') as HTMLInputElement;
 const elementNameElement: HTMLInputElement = document.getElementById('element-name') as HTMLInputElement;
 const elementTypeElement: HTMLSelectElement = document.getElementById('element-type') as HTMLSelectElement;
-const elementIdElement: HTMLInputElement = document.getElementById('element-id') as HTMLInputElement;
+const elementLocatorElement: HTMLInputElement = document.getElementById('element-locator') as HTMLInputElement;
 const includeGetElement: HTMLInputElement = document.getElementById('include-get') as HTMLInputElement;
 const addElementButton: HTMLButtonElement = document.getElementById('add-element-button') as HTMLButtonElement;
 const elementTableElement: HTMLTableElement = document.getElementById('element-table') as HTMLTableElement;
@@ -77,14 +77,14 @@ function addElementToTable(): void {
 		const row: HTMLTableRowElement = elementTableElement.insertRow(-1);
 		const elementNameCell: HTMLTableCellElement = row.insertCell(0);
 		const elementTypeCell: HTMLTableCellElement = row.insertCell(1);
-		const elementIdCell: HTMLTableCellElement = row.insertCell(2);
+		const elementLocatorCell: HTMLTableCellElement = row.insertCell(2);
 		const getCell: HTMLTableCellElement = row.insertCell(3);
 		const editCell: HTMLTableCellElement = row.insertCell(4);
 		const removeCell: HTMLTableCellElement = row.insertCell(5);
 
 		elementNameCell.textContent = elementNameElement.value;
 		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
-		elementIdCell.textContent = elementIdElement.value;
+		elementLocatorCell.textContent = elementLocatorElement.value;
 		getCell.textContent = includeGetElement.checked ? "true" : "false";
 		editCell.innerHTML = editButtonHTML;
 		removeCell.innerHTML = removeButtonHTML;
@@ -95,12 +95,12 @@ function addElementToTable(): void {
 		const row: HTMLTableRowElement = elementTableElement.rows[editElementTableRowIndex];
 		const elementNameCell: HTMLTableCellElement = row.cells[0];
 		const elementTypeCell: HTMLTableCellElement = row.cells[1];
-		const elementIdCell: HTMLTableCellElement = row.cells[2];
+		const elementLocatorCell: HTMLTableCellElement = row.cells[2];
 		const getCell: HTMLTableCellElement = row.cells[3];
 
 		elementNameCell.textContent = elementNameElement.value;
 		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
-		elementIdCell.textContent = elementIdElement.value;
+		elementLocatorCell.textContent = elementLocatorElement.value;
 		getCell.textContent = includeGetElement.checked ? "true" : "false";
 
 		resetAddElementForm();
@@ -113,7 +113,7 @@ function addElementToTable(): void {
 function resetAddElementForm(): void {
 	elementNameElement.value = '';
 	elementTypeElement.selectedIndex = 0;
-	elementIdElement.value = '';
+	elementLocatorElement.value = '';
 	includeGetElement.checked = false;
 	addElementButton.textContent = 'Add';
 	editElementTableRowIndex = undefined;
@@ -125,7 +125,7 @@ function editElementFromTable(buttonElement: HTMLButtonElement): void {
 
 	const elementNameCellContent: string = tableRowElement.cells[0].textContent ?? '';
 	const elementTypeCellContent: string = tableRowElement.cells[1].textContent ?? '';
-	const elementIdCellContent: string = tableRowElement.cells[2].textContent ?? '';
+	const elementLocatorCellContent: string = tableRowElement.cells[2].textContent ?? '';
 	const includeGetCellContent: boolean = tableRowElement.cells[3].textContent == 'true';
 
 	for (let i: number = 0; i < elementTypeElement.options.length; i++) {
@@ -135,7 +135,7 @@ function editElementFromTable(buttonElement: HTMLButtonElement): void {
 		}
 	}
 	elementNameElement.value = elementNameCellContent;
-	elementIdElement.value = elementIdCellContent;
+	elementLocatorElement.value = elementLocatorCellContent;
 	includeGetElement.checked = includeGetCellContent;
 
 	editElementTableRowIndex = tableRowElement.rowIndex - 1;
@@ -179,10 +179,10 @@ function generatePageObject(): void {
 	for (let i: number = 0; i < elementTableRows.length; i++) {
 		const elementName: string = elementTableRows[i].children[0].textContent ?? '';
 		const elementType: string = elementTableRows[i].children[1].textContent ?? '';
-		const elementId: string = elementTableRows[i].children[2].textContent ?? '';
+		const elementLocator: string = elementTableRows[i].children[2].textContent ?? '';
 		const includeGet: string = elementTableRows[i].children[3].textContent ?? '';
 
-		elementTableContent = [...elementTableContent, [elementName, elementType, elementId, includeGet]];
+		elementTableContent = [...elementTableContent, [elementName, elementType, elementLocator, includeGet]];
 	}
 
 	const settingFromArray: PageObjectTemplate = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
@@ -206,8 +206,8 @@ function generatePageObject(): void {
 				replaceValue: elementTableContent[i][1]
 			},
 			{
-				searchValue: '${ElementId}',
-				camelCaseSearchValue: '${elementId}',
+				searchValue: '${ElementLocator}',
+				camelCaseSearchValue: undefined,
 				replaceValue: elementTableContent[i][2]
 			}
 		]
@@ -242,10 +242,10 @@ function generatePageObject(): void {
 		return temp;
 	}
 
-	function checkForCamelCaseAndReplace(stringToCheck: string, searchValue: string, camelCaseSearchValue: string, replaceValue: string): string {
+	function checkForCamelCaseAndReplace(stringToCheck: string, searchValue: string, camelCaseSearchValue: string | undefined, replaceValue: string): string {
 		let retVal: string = stringToCheck.replaceAll(searchValue, replaceValue);
 
-		if (stringToCheck.includes(camelCaseSearchValue)) {
+		if (camelCaseSearchValue !== undefined && stringToCheck.includes(camelCaseSearchValue)) {
 			retVal = retVal.replaceAll(camelCaseSearchValue, `${replaceValue[0].toLocaleLowerCase()}${replaceValue.slice(1)}`);
 		}
 
@@ -286,6 +286,6 @@ function copyToClipboard(): void {
 
 interface VariableCheckModel {
 	searchValue: string,
-	camelCaseSearchValue: string,
+	camelCaseSearchValue: string | undefined,
 	replaceValue: string
 }
