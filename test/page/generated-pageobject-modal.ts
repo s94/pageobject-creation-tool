@@ -25,6 +25,6 @@ export class GeneratedPageObjectModal {
 	}
 
 	public async getOutputValue(): Promise<string> {
-		return await this.output_Textbox.inputValue();
+		return await this.output_Textbox.textContent();
 	}
 }
