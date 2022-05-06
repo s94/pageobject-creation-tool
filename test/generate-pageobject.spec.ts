@@ -14,7 +14,7 @@ test('create template > use template > validate generated pageobject', async () 
 	const electronApp: ElectronApplication = await getTestElectronApp();
 
 	const testTemplateName: string = TestData.uniqueTestTemplateName();
-	const testElementTemplate: string = '\\tprivate get ${ElementName}_${ElementType}(): Locator { return this.page.locator(\'${ElementId}\'); }\\n';
+	const testElementTemplate: string = '\\tprivate get ${ElementName}_${ElementType}(): Locator { return this.page.locator(\'${ElementLocator}\'); }\\n';
 	const testPageObjectStructure: string = `import { Locator, Page } from \'@playwright/test\';\\nimport { PageBase } from \'../page-base\';\\n\\nexport class \${PageObjectName} extends PageBase {\\n\${Elements}\\n\\tconstructor(page: Page) {\\n\\t\\tsuper(page);\\n\\t}\\n\\n\${GeneralMethods}\\n\\n\${GetMethods}\\n}`;
 	const testElementType: string = 'Textbox';
 	const testGeneralMethodTemplate: string = '\\tasync enter\${ElementName}(textToEnter: string): Promise<void> {\\n\\t\\tawait this.\${ElementName}_\${ElementType}.fill(textToEnter);\\n\\t}';
@@ -22,9 +22,9 @@ test('create template > use template > validate generated pageobject', async () 
 
 	const testPageObjectName: string = 'TestPageObject';
 	const testElementName: string = 'testElement';
-	const testElementId: string = '#test-id';
+	const testElementLocator: string = '#test-id';
 
-	const generatedPageObjectOutput: string = `import { Locator, Page } from \'@playwright/test\';\nimport { PageBase } from \'../page-base\';\n\nexport class ${testPageObjectName} extends PageBase {\n\tprivate get ${testElementName}_${testElementType}(): Locator { return this.page.locator(\'${testElementId}\'); }\n\n\tconstructor(page: Page) {\n\t\tsuper(page);\n\t}\n\n\tasync enter${testElementName}(textToEnter: string): Promise<void> {\n\t\tawait this.${testElementName}_${testElementType}.fill(textToEnter);\n\t}\n\n\tasync get${testElementName}Value(): Promise<string> {\n\t\treturn await this.${testElementName}_${testElementType}.inputValue();\n\t}\n}`;
+	const generatedPageObjectOutput: string = `import { Locator, Page } from \'@playwright/test\';\nimport { PageBase } from \'../page-base\';\n\nexport class ${testPageObjectName} extends PageBase {\n\tprivate get ${testElementName}_${testElementType}(): Locator { return this.page.locator(\'${testElementLocator}\'); }\n\n\tconstructor(page: Page) {\n\t\tsuper(page);\n\t}\n\n\tasync enter${testElementName}(textToEnter: string): Promise<void> {\n\t\tawait this.${testElementName}_${testElementType}.fill(textToEnter);\n\t}\n\n\tasync get${testElementName}Value(): Promise<string> {\n\t\treturn await this.${testElementName}_${testElementType}.inputValue();\n\t}\n}`;
 
 	const indexPage: IndexPage = new IndexPage(await electronApp.firstWindow());
 	const indexService: IndexService = new IndexService(indexPage);
@@ -39,7 +39,7 @@ test('create template > use template > validate generated pageobject', async () 
 	await settingsService.checkForErrors(SettingsPageError.Blank);
 
 	// use template
-	const pageObjectElement: PageObjectElement = { elementType: testElementType, elementName: testElementName, elementId: testElementId, includeGet: true };
+	const pageObjectElement: PageObjectElement = { elementType: testElementType, elementName: testElementName, elementId: testElementLocator, includeGet: true };
 	const pageObject: PageObject = { templateName: testTemplateName, pageObjectName: testPageObjectName, pageObjectElements: [pageObjectElement] };
 	await settingsPage.clickHomeLink();
 	await indexService.generatePageObject(pageObject);
