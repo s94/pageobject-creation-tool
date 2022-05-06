@@ -221,6 +221,10 @@ body {
 	width: 0%;
 }
 
+.overflow-wrap-anywhere {
+	overflow-wrap: anywhere;
+}
+
 .mandatory::after {
 	content: "*";
 	color: var(--clr-french-raspberry);

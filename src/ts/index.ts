@@ -82,6 +82,9 @@ function addElementToTable(): void {
 		const editCell: HTMLTableCellElement = row.insertCell(4);
 		const removeCell: HTMLTableCellElement = row.insertCell(5);
 
+		elementNameCell.classList.add('overflow-wrap-anywhere');
+		elementLocatorCell.classList.add('overflow-wrap-anywhere');
+
 		elementNameCell.textContent = elementNameElement.value;
 		elementTypeCell.textContent = elementTypeElement.selectedOptions[0].textContent;
 		elementLocatorCell.textContent = elementLocatorElement.value;

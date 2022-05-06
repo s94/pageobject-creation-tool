@@ -76,6 +76,9 @@ function addToTable(elementType: string, generalMethodTemplate: string, getMetho
 	const editCell: HTMLTableCellElement = row.insertCell(3);
 	const removeCell: HTMLTableCellElement = row.insertCell(4);
 
+	generalMethodTemplateCell.classList.add('overflow-wrap-anywhere');
+	getMethodTemplateCell.classList.add('overflow-wrap-anywhere');
+
 	elementTypeCell.textContent = elementType;
 	generalMethodTemplateCell.textContent = generalMethodTemplate;
 	getMethodTemplateCell.textContent = getMethodTemplate;
