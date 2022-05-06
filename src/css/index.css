@@ -50,6 +50,7 @@
 .modal-header {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	height: 2.5rem;
 	border-bottom: 1px solid var(--clr-baby-powder);
 	margin-bottom: 1.5rem;
@@ -74,6 +75,12 @@
 	font-size: 0.7rem !important;
 	border-radius: 4px !important;
 	height: -webkit-fill-available;
+}
+
+.modal__code,
+.modal_code code,
+.modal__code span {
+	font-family: monospace !important;
 }
 
 @media (min-width: 72rem) {
