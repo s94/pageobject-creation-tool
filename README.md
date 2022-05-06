@@ -4,9 +4,8 @@ pageobject-creation-tool is an application for code generation of Page Object Mo
 
 Written in TypeScript and built with Electron.
 
-![pageobject-creation-tool screenshot](https://user-images.githubusercontent.com/11080821/166154345-a54519b0-6646-4e16-9f23-3598d1f38ae2.png)
-
-![pageobject-creation-tool screenshot 2](https://user-images.githubusercontent.com/11080821/167179052-c5f97892-ad02-4941-b815-82df6e69125c.png)
+![pageobject-creation-tool screenshot](https://user-images.githubusercontent.com/11080821/167182147-fe0d4e34-b4d8-424a-93bf-2a7b0e1f5a77.png)
+![pageobject-creation-tool screenshot 2](https://user-images.githubusercontent.com/11080821/167182693-c4224ef0-8db6-4ac9-8d4c-e3239e238d96.png)
 
 ## Build the application
 
