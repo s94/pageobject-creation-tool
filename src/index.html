@@ -7,6 +7,7 @@
 		<title>pageobject-creation-tool</title>
 		<link rel="stylesheet" href="css/shared.css" />
 		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="css/prism.css" />
 		<script src="js/shared.js" type="text/javascript" async></script>
 		<script src="js/index.js" type="text/javascript" async></script>
 	</head>
@@ -52,8 +53,8 @@
 					</div>
 
 					<div class="form__item">
-						<label class="form__label">Element ID</label>
-						<input class="form__input" id="element-id" type="text" placeholder="username-id" />
+						<label class="form__label">Element Locator</label>
+						<input class="form__input" id="element-locator" type="text" placeholder="#username-id" />
 					</div>
 				</div>
 
@@ -64,7 +65,7 @@
 					</div>
 				</div>
 
-				<button class="form__button" id="add-button" type="button" onclick="addElementToTable();">
+				<button class="form__button" id="add-element-button" type="button" onclick="addElementToTable();">
 					Add
 				</button>
 			</form>
@@ -75,9 +76,10 @@
 						<tr>
 							<th>Element Name</th>
 							<th>Element Type</th>
-							<th>Element ID</th>
+							<th>Element Locator</th>
 							<th>Get</th>
-							<th></th>
+							<th class="w-0"></th>
+							<th class="w-0"></th>
 						</tr>
 					</thead>
 					<tbody class="table__body" id="element-table"></tbody>
@@ -93,12 +95,24 @@
 			<div class="modal__content">
 				<div class="modal-header">
 					<label class="modal-header__title">Generated PageObject</label>
+					<div>
+						<label>Syntax Highlighting</label>
+						<select id="syntax-list" class="form__select" onchange="updateSyntaxHighlighting();">
+							<option value="0" selected></option>
+							<option value="csharp">C#</option>
+							<option value="java">Java</option>
+							<option value="js">JavaScript</option>
+							<option value="py">Python</option>
+							<option value="rust">Rust</option>
+							<option value="ts">TypeScript</option>
+						</select>
+					</div>
 					<div class="modal-header__close" onclick="closeModal();">
 						&times;
 					</div>
 				</div>
 
-				<textarea class="modal__textarea" id="output" spellcheck="false"></textarea>
+				<pre class="modal__code"><code id="output" class="modal__code"></code></pre>
 
 				<div class="modal-footer">
 					<button class="modal-footer__button" id="copy-to-clipboard-button" onclick="copyToClipboard();">
@@ -107,5 +121,6 @@
 				</div>
 			</div>
 		</div>
+		<script src="js/prism.js" type="text/javascript" async></script>
 	</body>
 </html>

@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "author": "Adam Slater",
   "description": "Creates PageObjects to be used for automated testing.",
+  "repository": "github:s94/pageobject-creation-tool",
   "main": "src/js/main.js",
   "scripts": {
     "start": "electron-forge start",
-    "test": "npx tsc && electron-forge make && playwright test",
     "package": "electron-forge package",
-    "make": "npx tsc && electron-forge make"
+    "make": "npx tsc && electron-forge make",
+    "pretest": "npx tsc && electron-forge package",
+    "test": "playwright test"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",

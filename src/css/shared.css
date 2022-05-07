@@ -135,10 +135,6 @@ body {
 	font-size: 0.8em;
 }
 
-.table tr td:last-child {
-	text-align: center;
-}
-
 .table tbody tr {
 	height: 4rem;
 	background-color: var(--clr-raisin-black);
@@ -191,8 +187,16 @@ body {
 	width: auto;
 }
 
+.table__button--edit {
+	background-color: var(--clr-little-boy-blue);
+	border: 1px solid var(--clr-little-boy-blue);
+	border-radius: 4px;
+	width: auto;
+}
+
+.table__button--edit,
 .table__button--remove {
-	padding: 0.4rem 1rem;
+	padding: 0.4rem 0.6rem;
 }
 
 .form__button--remove:hover,
@@ -203,8 +207,22 @@ body {
 	cursor: pointer;
 }
 
+.table__button--edit:hover,
+.table__button--edit:focus  {
+	background-color: var(--clr-azure);
+	cursor: pointer;
+}
+
 .w-fill-available {
 	width: -webkit-fill-available;
+}
+
+.w-0 {
+	width: 0%;
+}
+
+.overflow-wrap-anywhere {
+	overflow-wrap: anywhere;
 }
 
 .mandatory::after {

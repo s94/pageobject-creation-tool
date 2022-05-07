@@ -1,252 +1,237 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
-import { IndexPage } from './page/index/index-page';
-import { SettingsPage } from './page/settings/settings-page'
+import { ElectronApplication, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
+import { SettingsPageError } from './enum/settings-page-error';
+import { IndexPage } from './page/index-page';
+import { SettingsPage } from './page/settings-page';
+import { SettingsService } from './service/settings-service';
+import { ElementType, PageObjectTemplate } from './test-types';
+import { TestData } from './test-data';
 
 let electronApp: ElectronApplication;
 let settingsPage: SettingsPage;
-let expectedErrorMsg: string;
+let settingsService: SettingsService;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	const indexPage = new IndexPage(await electronApp.firstWindow());
 	await indexPage.clickSettingsLink();
 	settingsPage = new SettingsPage(await electronApp.firstWindow());
+	settingsService = new SettingsService(settingsPage);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });
 
 test.afterEach(async () => {
 	await electronApp.close();
 });
 
-test.describe('correct error is shown when clicking \'Save\' with no element declaration entered', async () => {
-	test.beforeEach(async () => {
-		expectedErrorMsg = 'Unable to save template, element declaration is required.';
-		expect(await settingsPage.getElementTemplateValue()).toBe('');
-	});
-
-	test.afterEach(async () => {
-		await settingsPage.clickSaveTemplateButton();
-		expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
-	});
-
-	test('PageObject Structure: blank, Element Type Table: blank, Template Name: blank', async () => {
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('');
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
-	});
-	
-	test('PageObject Structure: whitespace, Element Type Table: blank, Template Name: blank', async () => {
-		await settingsPage.enterPageObjectStructure(' ');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe(' ');
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
-	});
-
-	test('PageObject Structure: blank, Element Type Table: populated, Template Name: blank', async () => {
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('');
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
-	});
-	
-	test('PageObject Structure: whitespace, Element Type Table: populated, Template Name: blank', async () => {
-		await settingsPage.enterPageObjectStructure(' ');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe(' ');
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
-	});
-
-	test('PageObject Structure: blank, Element Type Table: blank, Template Name: whitespace', async () => {
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('');
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		await settingsPage.enterTemplateName(' ');
-		expect(await settingsPage.getTemplateNameValue()).toBe(' ');
-	});
-	
-	test('PageObject Structure: whitespace, Element Type Table: populated, Template Name: whitespace', async () => {
-		await settingsPage.enterPageObjectStructure(' ');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe(' ');
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		await settingsPage.enterTemplateName(' ');
-		expect(await settingsPage.getTemplateNameValue()).toBe(' ');
-	});
-});
-
 test.describe('correct error is shown when clicking \'Save\' with no PageObject Structure entered', async () => {
-	test.beforeEach(async () => {
-		expectedErrorMsg = 'Unable to save template, PageObject structure is required.';
-		await settingsPage.enterElementTemplate('TestElementTemplate');
-		expect(await settingsPage.getElementTemplateValue()).toBe('TestElementTemplate');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('');
-	});
-
 	test.afterEach(async () => {
-		await settingsPage.clickSaveTemplateButton();
-		expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await settingsService.checkForErrors(SettingsPageError.UnableToSave_PageObjectStructureRequired);
 	});
 
-	test('Element Type Table: blank, Template Name: blank', async () => {
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
+	test('Template Name: blank, Element Type Table: blank', async () => {
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Blank,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 	
-	test('Element Type Table: populated, Template Name: blank', async () => {
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
+	test('Template Name: blank, Element Type Table: populated', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Blank,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: [elementType]
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 
-	test('Element Type Table: blank, Template Name: whitespace', async () => {
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		await settingsPage.enterTemplateName(' ');
-		expect(await settingsPage.getTemplateNameValue()).toBe(' ');
+	test('Template Name: whitespace, Element Type Table: blank', async () => {
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Whitespace,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 	
-	test('Element Type Table: populated, Template Name: whitespace', async () => {
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
+	test('Template Name: whitespace, Element Type Table: populated', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Whitespace,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: [elementType]
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 
-	test('Element Type Table: blank, Template Name: populated', async () => {
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-		await settingsPage.enterTemplateName('TestTemplateName');
-		expect(await settingsPage.getTemplateNameValue()).toBe('TestTemplateName');
+	test('Template Name: populated, Element Type Table: blank', async () => {
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 
-	test('Element Type Table: populated, Template Name: populated', async () => {
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		await settingsPage.enterTemplateName('TestTemplateName');
-		expect(await settingsPage.getTemplateNameValue()).toBe('TestTemplateName');
+	test('Template Name: populated, Element Type Table: populated', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Blank,
+			elementTypes: [elementType]
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 });
 
 test.describe('correct error is shown when clicking \'Save\' with the element type table blank', async () => {
-	test.beforeEach(async () => {
-		expectedErrorMsg = 'Unable to save template, element table cannot be empty.';
-		await settingsPage.enterElementTemplate('TestElementTemplate');
-		expect(await settingsPage.getElementTemplateValue()).toBe('TestElementTemplate');
-		await settingsPage.enterPageObjectStructure('TestPageObjectStructure');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('TestPageObjectStructure');
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(0);
-	});
-
 	test.afterEach(async () => {
-		await settingsPage.clickSaveTemplateButton();
-		expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await settingsService.checkForErrors(SettingsPageError.UnableToSave_EmptyElementTable);
 	});
 
 	test('Template Name: blank', async () => {
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Blank,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 	
 	test('Template Name: whitespace', async () => {
-		await settingsPage.enterTemplateName(' ');
-		expect(await settingsPage.getTemplateNameValue()).toBe(' ');
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Whitespace,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 
 	test('Template Name: populated', async () => {
-		await settingsPage.enterTemplateName('TestTemplateName');
-		expect(await settingsPage.getTemplateNameValue()).toBe('TestTemplateName');
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: []
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 });
 
 test.describe('correct error is shown when clicking \'Save\' with no Template Name entered', async () => {
-	test.beforeEach(async () => {
-		expectedErrorMsg = 'Unable to save template, template name is required.';
-		await settingsPage.enterElementTemplate('TestElementTemplate');
-		expect(await settingsPage.getElementTemplateValue()).toBe('TestElementTemplate');
-		await settingsPage.enterPageObjectStructure('TestPageObjectStructure');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('TestPageObjectStructure');
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-	});
-
 	test.afterEach(async () => {
-		await settingsPage.clickSaveTemplateButton();
-		expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await settingsPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await settingsService.checkForErrors(SettingsPageError.UnableToSave_TemplateNameRequired);
 	});
 
 	test('Template Name: blank', async () => {
-		expect(await settingsPage.getTemplateNameValue()).toBe('');
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Blank,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: [elementType]
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 	
 	test('Template Name: whitespace', async () => {
-		await settingsPage.enterTemplateName(' ');
-		expect(await settingsPage.getTemplateNameValue()).toBe(' ');
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.Whitespace,
+			elementTemplate: TestData.Populated,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: [elementType]
+		};
+
+		await settingsService.createTemplate(pageObjectTemplate);
 	});
 });
 
-test.describe('no error is shown when clicking \'Save\' with element declaration, PageObject Structure, element type table and Template Name populated', async () => {
-	test('Template Name: blank', async () => {
-		await settingsPage.enterElementTemplate('TestElementTemplate');
-		expect(await settingsPage.getElementTemplateValue()).toBe('TestElementTemplate');
-		await settingsPage.enterPageObjectStructure('TestPageObjectStructure');
-		expect(await settingsPage.getPageObjectStructureValue()).toBe('TestPageObjectStructure');
-		await settingsPage.enterElementType('TestElement');
-		expect(await settingsPage.getElementTypeValue()).toBe('TestElement');
-		await settingsPage.enterGeneralMethodTemplate('TestGeneralMethod');
-		expect(await settingsPage.getGeneralMethodTemplateValue()).toBe('TestGeneralMethod');
-		await settingsPage.clickAddElementTypeToTableButton();
-		expect(await settingsPage.getElementTypeTableRowCount()).toBe(1);
-		await settingsPage.enterTemplateName('TestTemplateName');
-		expect(await settingsPage.getTemplateNameValue()).toBe('TestTemplateName');
-		await settingsPage.clickSaveTemplateButton();
-		expect(await settingsPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-		expect(await settingsPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
+test.describe('no error is shown when clicking \'Save\' with PageObject Structure, element type table and Template Name populated', async () => {
+	test.afterEach(async () => {
+		await settingsService.checkForErrors(SettingsPageError.Blank);
 	});
+
+	test('Element Declaration: blank', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Blank,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: [elementType]
+		};
+		
+		await settingsService.createTemplate(pageObjectTemplate);
+	});
+
+	test('Element Declaration: whitespace', async () => {
+		const elementType: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Populated
+		};
+		const pageObjectTemplate: PageObjectTemplate = {
+			templateName: TestData.uniqueTestTemplateName(),
+			elementTemplate: TestData.Whitespace,
+			pageObjectStructure: TestData.Populated,
+			elementTypes: [elementType]
+		};
+		
+		await settingsService.createTemplate(pageObjectTemplate);
+	});
+});
+
+test('no error is shown when clicking \'Save\' with element declaration, PageObject Structure, element type table and Template Name populated', async () => {
+	const elementType: ElementType = {
+		elementTypeName: TestData.Populated,
+		generalMethodTemplate: TestData.Populated
+	};
+	const pageObjectTemplate: PageObjectTemplate = {
+		templateName: TestData.uniqueTestTemplateName(),
+		elementTemplate: TestData.Populated,
+		pageObjectStructure: TestData.Populated,
+		elementTypes: [elementType]
+	};
+
+	await settingsService.createTemplate(pageObjectTemplate);
+	await settingsService.checkForErrors(SettingsPageError.Blank);
 });

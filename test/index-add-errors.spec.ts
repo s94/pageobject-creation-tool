@@ -1,39 +1,24 @@
-import { test, expect } from '@playwright/test';
-import { ElectronApplication, _electron as electron } from 'playwright';
-import { ElectronAppInfo, findLatestBuild, parseElectronApp } from 'electron-playwright-helpers';
+import { ElectronApplication, expect, test } from '@playwright/test';
+import { getTestElectronApp } from './electron-test-setup';
+import { IndexPageError } from './enum/index-page-error';
 import { SelectListAttribute } from './enum/select-list-attribute';
-import { IndexPage } from './page/index/index-page';
+import { IndexPage } from './page/index-page';
+import { IndexService } from './service/index-service';
+import { TestData } from './test-data';
+import { PageObjectElement } from './test-types';
 
 let electronApp: ElectronApplication;
 let indexPage: IndexPage;
-
-const expectedErrorMsg: string = 'Element cannot be added to the table, submission is not valid.';
+let indexService: IndexService;
 
 test.beforeEach(async () => {
-	const latestBuild: string = findLatestBuild();
-	const appInfo: ElectronAppInfo = parseElectronApp(latestBuild);
-	electronApp = await electron.launch({
-		args: [appInfo.main],
-		executablePath: appInfo.executable
-	});
-
-	electronApp.on('window', async (page) => {
-		const filename: string = page.url()?.split('/').pop();
-		console.log(`Window opened: ${filename}`);
-
-		page.on('pageerror', (error) => {
-			console.error(error);
-		});
-		page.on('console', (msg) => {
-			console.log(msg.text());
-		});
-	});
+	electronApp = await getTestElectronApp();
 
 	indexPage = new IndexPage(await electronApp.firstWindow());
-	expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-	expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
-	await indexPage.selectTemplate('Example Template', SelectListAttribute.label);
-	expect(await indexPage.getTemplateListValue(SelectListAttribute.value)).toBe('1');
+	indexService = new IndexService(indexPage);
+	await indexService.checkForErrors(IndexPageError.Blank)
+	await indexPage.selectTemplate(TestData.ExampleTemplate.Name, SelectListAttribute.Label);
+	expect(await indexPage.getTemplateListValue(SelectListAttribute.Value)).toBe('1');
 });
 
 test.afterEach(async () => {
@@ -42,50 +27,62 @@ test.afterEach(async () => {
 
 test.describe('correct error is shown when clicking \'Add\' with Element Name and/or Element Type not populated', async () => {
 	test.afterEach(async () => {
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly hidden').toBe(true);
-		expect(await indexPage.getErrorMessageValue(), 'error element text is blank').toBe(expectedErrorMsg);
+		await indexService.checkForErrors(IndexPageError.UnableToAdd);
 	});
 
 	test('Element Name: blank, Element Type: blank', async () => {
-		expect(await indexPage.getElementNameValue()).toBe('');
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Blank,
+			elementType: TestData.Blank
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 
 	test('Element Name: whitespace, Element Type: blank', async () => {
-		await indexPage.enterElementName(' ');
-		expect(await indexPage.getElementNameValue()).toBe(' ');
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Whitespace,
+			elementType: TestData.Blank
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 
 	test('Element Name: populated, Element Type: blank', async () => {
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Populated,
+			elementType: TestData.Blank
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 
 	test('Element Name: blank, Element Type: populated', async () => {
-		expect(await indexPage.getElementNameValue()).toBe('');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Blank,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 
 	test('Element Name: whitespace, Element Type: populated', async () => {
-		await indexPage.enterElementName(' ');
-		expect(await indexPage.getElementNameValue()).toBe(' ');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Whitespace,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 });
 
 test.describe('no error is shown when clicking \'Add\' when Element Name and Element Type are populated', async () => {
 	test('Element Name: populated, Element Type: populated', async () => {
-		await indexPage.enterElementName('TestElement');
-		expect(await indexPage.getElementNameValue()).toBe('TestElement');
-		await indexPage.selectElementType('1', SelectListAttribute.value);
-		expect(await indexPage.getElementTypeValue(SelectListAttribute.value)).toBe('1');
-		await indexPage.clickAddElementToTableButton();
-		expect(await indexPage.isErrorMessageDisplayed(), 'error element is incorrectly visible').toBe(false);
-		expect(await indexPage.getErrorMessageValue(), 'error element text is not blank').toBe('');
+		const pageObjectElement: PageObjectElement = {
+			elementName: TestData.Populated,
+			elementType: TestData.ExampleTemplate.ElementType_Textbox
+		}
+
+		await indexService.addElementsToTable([pageObjectElement]);
 	});
 });

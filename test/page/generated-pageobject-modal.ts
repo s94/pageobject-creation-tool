@@ -12,19 +12,19 @@ export class GeneratedPageObjectModal {
 		this.page = page;
 	}
 
-	async clickCloseModalButton(): Promise<void> {
+	public async clickCloseModalButton(): Promise<void> {
 		await this.closeModal_Button.click();
 	}
 
-	async clickCopyToClipboardButton(): Promise<void> {
+	public async clickCopyToClipboardButton(): Promise<void> {
 		await this.copyToClipboard_Button.click();
 	}
 
-	async isOutputModalDisplayed(): Promise<boolean> {
+	public async isOutputModalDisplayed(): Promise<boolean> {
 		return await this.outputModal_Div.isVisible();
 	}
 
-	async getOutputValue(): Promise<string> {
-		return await this.output_Textbox.inputValue();
+	public async getOutputValue(): Promise<string> {
+		return await this.output_Textbox.textContent();
 	}
 }

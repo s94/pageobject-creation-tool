@@ -108,3 +108,8 @@ dist
 
 # electron-forge make output
 out/
+
+# TypeScript compiled files
+src/js/index.js
+src/js/settings.js
+src/js/shared.js
