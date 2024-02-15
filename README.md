@@ -21,20 +21,20 @@ git clone https://github.com/s94/pageobject-creation-tool.git
 cd pageobject-creation-tool
 ```
 
-3. Install the project dependencies using npm:
+3. Install the project dependencies using pnpm:
 
 * The application tests use https://playwright.dev
 * Firstly install Playwright using the skip browser download environment variable, this is because we do not need to install web browsers to test this Electron application
 
 ```bash
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm i -D playwright
-npm ci
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D playwright
+pnpm install --frozen-lockfile
 ```
 
 4. Build the project:
 
 ```bash
-npm run package
+pnpm run package
 ```
 
 The application can now be found within the following directory:
@@ -49,5 +49,5 @@ cd pageobject-creation-tool/out/pageobject-creation-tool-{os specific here}
 First clone the repo and build the application
 
 ```bash
-npm test
+pnpm run test
 ```
