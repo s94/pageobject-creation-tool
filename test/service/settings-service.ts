@@ -6,7 +6,7 @@ import { ElementType, PageObjectTemplate } from '../test-types';
 
 export class SettingsService {
 	private readonly settingsPage: SettingsPage;
-	
+
 	constructor(settingsPage: SettingsPage) {
 		this.settingsPage = settingsPage;
 	}
@@ -47,19 +47,21 @@ export class SettingsService {
 			const elementType: ElementType = elementTypeArray[i];
 			await this.settingsPage.enterElementType(elementType.elementTypeName);
 			expect(await this.settingsPage.getElementTypeValue()).toBe(elementType.elementTypeName);
-			await this.settingsPage.enterGeneralMethodTemplate(elementType.generalMethodTemplate);
-			expect(await this.settingsPage.getGeneralMethodTemplateValue()).toBe(elementType.generalMethodTemplate);
+			if ((elementType.generalMethodTemplate !== null && elementType.generalMethodTemplate !== undefined) || elementType.generalMethodTemplate?.trim().length > 0) {
+				await this.settingsPage.enterGeneralMethodTemplate(elementType.generalMethodTemplate);
+				expect(await this.settingsPage.getGeneralMethodTemplateValue()).toBe(elementType.generalMethodTemplate);
+			}
 			if ((elementType.getMethodTemplate !== null && elementType.getMethodTemplate !== undefined) || elementType.getMethodTemplate?.trim().length > 0) {
 				await this.settingsPage.enterGetMethodTemplate(elementType.getMethodTemplate);
 				expect(await this.settingsPage.getGetMethodTemplateValue()).toBe(elementType.getMethodTemplate);
 			}
 			await this.settingsPage.clickAddElementTypeToTableButton();
 
-			if (elementType.elementTypeName.trim().length > 0 && elementType.generalMethodTemplate.trim().length > 0) {
+			if (elementType.elementTypeName.trim().length > 0) {
 				tableRowNumber++;
 				await this.settingsPage.waitForElementTypeTableToPopulate(tableRowNumber);
 			}
-			
+
 			expect(await this.settingsPage.getElementTypeTableRowCount()).toBe(tableRowNumber);
 		}
 	}

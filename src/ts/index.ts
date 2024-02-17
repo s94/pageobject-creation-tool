@@ -20,11 +20,21 @@ function populateElementTypeList(): void {
 	if (templateName && templateName.length > 0) {
 		const settingFromArray: PageObjectTemplate = settingsFileContent.filter((x: { TemplateName: string; }) => x.TemplateName === templateName)[0];
 
+		let includeGetRequired: boolean = false;
+
 		removeChildFromElementType();
-	
-		let elementTypeArray: string[][] = [ ];
+
+		let elementTypeArray: string[][] = [];
 		for (let i: number = 0; i < settingFromArray.ElementType.length; i++) {
 			elementTypeArray = [...elementTypeArray, settingFromArray.ElementType[i]];
+			if (settingFromArray.ElementType[i][2] !== "")
+				includeGetRequired = true;
+		}
+
+		const includeGetElements: HTMLCollection = includeGetElement.parentElement!.children;
+		for (let i: number = 0; i < includeGetElements.length; i++) {
+			const x: HTMLElement = includeGetElements[i] as HTMLElement;
+			x.hidden = !includeGetRequired;
 		}
 
 		optionElement.value = '';
@@ -37,7 +47,7 @@ function populateElementTypeList(): void {
 		optionElement = document.createElement('option');
 		optionElement.value = '0';
 		elementTypeElement.appendChild(optionElement);
-	
+
 		for (let i: number = 0; i < elementTypeArray.length; i++) {
 			const optionElement = document.createElement('option');
 			optionElement.value = (i + 1).toString();
@@ -228,9 +238,9 @@ function generatePageObject(): void {
 	}
 
 	const output: string = pageObjectStructure.replaceAll('${PageObjectName}', pageObjectName)
-											  .replace('${Elements}', elementsStringBuilder)
-											  .replace('${GeneralMethods}', generalMethodsStringBuilder)
-											  .replace('${GetMethods}', getMethodsStringBuilder);
+		.replace('${Elements}', elementsStringBuilder)
+		.replace('${GeneralMethods}', generalMethodsStringBuilder)
+		.replace('${GetMethods}', getMethodsStringBuilder);
 
 	outputElement.textContent = output.replaceAll('\\n', '\n').replaceAll('\\t', '\t');
 
