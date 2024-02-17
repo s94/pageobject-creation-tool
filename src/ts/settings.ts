@@ -41,9 +41,6 @@ function addElementTypeToTable(): void {
 	if (templateElementTypeElement.value === null || templateElementTypeElement.value.trim().length <= 0) {
 		isValid = false;
 	}
-	if (generalMethodTemplateElement.value === null || generalMethodTemplateElement.value.trim().length <= 0) {
-		isValid = false;
-	}
 
 	if (elementTypeTableElement && isValid && editElementTypeTableRowIndex === undefined) {
 		addToTable(templateElementTypeElement.value, generalMethodTemplateElement.value, getMethodTemplateElement.value);

@@ -57,24 +57,6 @@ test.describe('correct error is shown when clicking \'Add\' with Element Type an
 		await settingsService.addElementTypesToTable([elementTypeModel]);
 	});
 
-	test('Element Type: populated, General Method Template: blank', async () => {
-		const elementTypeModel: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Blank
-		};
-
-		await settingsService.addElementTypesToTable([elementTypeModel]);
-	});
-
-	test('Element Type: populated, General Method Template: whitespace', async () => {
-		const elementTypeModel: ElementType = {
-			elementTypeName: TestData.Populated,
-			generalMethodTemplate: TestData.Whitespace
-		};
-
-		await settingsService.addElementTypesToTable([elementTypeModel]);
-	});
-
 	test('Element Type: blank, General Method Template: populated', async () => {
 		const elementTypeModel: ElementType = {
 			elementTypeName: TestData.Blank,
@@ -122,7 +104,7 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 		const elementTypeModel: ElementType = {
 			elementTypeName: TestData.Populated,
 			generalMethodTemplate: TestData.Populated,
-			getMethodTemplate: TestData.Whitespace 
+			getMethodTemplate: TestData.Whitespace
 		};
 
 		await settingsService.addElementTypesToTable([elementTypeModel]);
@@ -153,6 +135,24 @@ test.describe('no error is shown when clicking \'Add\' with Element Type and Gen
 			elementTypeName: TestData.Populated,
 			generalMethodTemplate: TestData.Populated,
 			getMethodTemplate: undefined
+		};
+
+		await settingsService.addElementTypesToTable([elementTypeModel]);
+	});
+
+	test('Element Type: populated, General Method Template: blank', async () => {
+		const elementTypeModel: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Blank
+		};
+
+		await settingsService.addElementTypesToTable([elementTypeModel]);
+	});
+
+	test('Element Type: populated, General Method Template: whitespace', async () => {
+		const elementTypeModel: ElementType = {
+			elementTypeName: TestData.Populated,
+			generalMethodTemplate: TestData.Whitespace
 		};
 
 		await settingsService.addElementTypesToTable([elementTypeModel]);
